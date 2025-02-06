@@ -1,11 +1,4 @@
 class Solution {
-    long long fact(int x){
-       long long sum=1;
-        for(int i=1;i<=x;i++){
-           sum*=i;
-        }
-        return sum;
-    }
 public:
     int tupleSameProduct(vector<int>& nums) {
         int n=nums.size();
@@ -17,7 +10,7 @@ public:
         }
         int ans=0;
         for(auto&it:freq){
-            ans+=(fact(it.second))/((fact(it.second-2))*fact(2));
+            ans+=((it.second *(it.second-1))/2);
         }
         return ans*8;
 

@@ -1,6 +1,6 @@
 class Solution {
-    int fact(int x){
-       int sum=1;
+    long long fact(int x){
+       long long sum=1;
         for(int i=1;i<=x;i++){
            sum*=i;
         }

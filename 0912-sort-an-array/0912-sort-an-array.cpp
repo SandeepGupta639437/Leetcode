@@ -1,47 +1,27 @@
 class Solution {
 public:
-   void mergeSort(vector<int>&nums,int s,int e){
-    if(s>=e)return;
-     int mid=s+(e-s)/2;
-
-     mergeSort(nums,s,mid);  //left
-     mergeSort(nums,mid+1,e);  //right
-     merge(nums,s,mid,e);
-   }
-
-   void merge(vector<int>&nums,int s,int mid,int e){
-            vector<int>temp;
-            int l=s;
-            int r=mid+1;
-            //compare and add element in sorted order of two part to merge it
-            while(l<=mid && r<=e){
-                if(nums[l]<=nums[r]){
-                    temp.push_back(nums[l]);
-                    l++;
-                }else{
-                    temp.push_back(nums[r]);
-                    r++;
-                }
-            }
-            // if left side have elements lefts
-            while(l<=mid){
-                temp.push_back(nums[l]);
-                l++;
-            }
-           // if right side have elements left
-            while(r<=e){
-                temp.push_back(nums[r]);
-                r++;
-            }
-            // store temp in  nums
-            for(int i=s;i<=e;i++){
-                nums[i]=temp[i-s];
-            }
-    }
-
+    int count[100001];  
 
     vector<int> sortArray(vector<int>& nums) {
-        mergeSort(nums,0,nums.size()-1);
+        for(int i = 0; i < 100001; ++i) count[i] = 0;
+        int min_v = 50000, max_v = -50000;
+
+        for (int x : nums) {
+            count[x + 50000]++;
+            if (x < min_v) min_v = x;
+            if (x > max_v) max_v = x;
+        }
+        
+        int index=0;
+        for (int i=min_v+50000;i<=max_v+50000;++i) {
+            int c=count[i];
+            if (c>0){
+                int val = i - 50000;
+                while (c--) {
+                    nums[index++] = val;
+                }
+            }
+        }
         return nums;
     }
 };

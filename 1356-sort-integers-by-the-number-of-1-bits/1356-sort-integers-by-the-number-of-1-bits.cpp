@@ -1,0 +1,13 @@
+class Solution {
+public:
+    static bool c1(int a, int b){
+        int bitA = __builtin_popcount(a);
+        int bitB = __builtin_popcount(b);
+        if(bitA == bitB) return a < b;
+        return bitA < bitB;
+    }
+    vector<int> sortByBits(vector<int>& arr) {
+        sort(arr.begin(), arr.end(),c1);
+        return arr;
+    }
+};

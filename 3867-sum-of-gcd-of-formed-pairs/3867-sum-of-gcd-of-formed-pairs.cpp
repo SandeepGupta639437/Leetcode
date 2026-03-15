@@ -12,11 +12,10 @@ public:
         vector<ll>mx(n);
         vector<ll>prefGCD(n);
         mx[0]=nums[0];
+        prefGCD[0]=gcd(mx[0],nums[0]);
         for(ll i=1;i<n;i++){
             ll maxi = max(mx[i-1],1LL*nums[i]);
             mx[i]=maxi;
-        }
-        for(ll i=0;i<n;i++){
             prefGCD[i]=gcd(mx[i],nums[i]);
         }
         sort(begin(prefGCD),end(prefGCD));

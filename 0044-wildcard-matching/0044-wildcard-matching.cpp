@@ -1,23 +1,21 @@
 class Solution {
 public:
-    bool isMatch(string s, string p) {
-        int i = 0, j = 0, starIdx = -1, match = 0;
-        while (i < s.size()) {
-            if (j < p.size() && (p[j] == '?' || p[j] == s[i])) {
-                i++; j++;
-            } else if (j < p.size() && p[j] == '*') {
-                starIdx = j;
-                match = i;
-                j++;
-            } else if (starIdx != -1) {
-                j = starIdx + 1;
-                match++;
-                i = match;
-            } else {
-                return false;
-            }
+    vector<vector<int>> dp;
+
+    bool solve(string &s, string &p, int i, int j){
+        if(i==s.size() && j==p.size())return true;
+        if(j==p.size()) return false;
+        if(i==s.size()){
+            if(p[j]=='*')return solve(s,p,i,j+1);
+            return false;
         }
-        while (j < p.size() && p[j] == '*') j++;
-        return j == p.size();
+        if(p[j]=='?' || (s[i]==p[j]))return solve(s,p,i+1,j+1);
+        else if(p[j]=='*')return (solve(s,p,i+1,j)||solve(s,p,i,j+1));
+        else return false;
+
+    }
+
+    bool isMatch(string s, string p) {
+        return solve(s,p,0,0);
     }
 };

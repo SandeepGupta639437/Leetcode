@@ -13,8 +13,8 @@ public:
         }
 
         if(p[j]=='*'){
-            if(i < s.size() && solve(s,p,i+1,j)) return dp[i][j]=1;
-            if(solve(s,p,i,j+1)) return dp[i][j]=1;
+            if(i < s.size()) return dp[i][j]=solve(s,p,i+1,j);
+            return dp[i][j]=solve(s,p,i,j+1);
         }
 
         return dp[i][j]=0;

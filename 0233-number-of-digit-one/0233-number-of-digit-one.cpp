@@ -1,32 +1,24 @@
 class Solution {
 public:
-    int cntOne(int n ){
-        int cnt =0;
-        while(n){
-            if(n%10==1)cnt++;
-            n/=10;
+    int dp[11][2][10];
+    int solve(string &s,int idx,bool tight,int cnt_of_1){
+        if(idx==s.size())return cnt_of_1;
+
+        if(dp[idx][tight][cnt_of_1]!=-1)return dp[idx][tight][cnt_of_1];
+
+        int lb =0;
+        int ub = (tight==1)?s[idx]-'0':9;
+
+        int res =0;
+        for(int dig =lb; dig <= ub ;dig++){
+            res += solve(s , idx+1 , (tight&&dig==ub) , cnt_of_1+(dig==1));
         }
-        return cnt;
+        return dp[idx][tight][cnt_of_1]= res;
     }
+
     int countDigitOne(int n) {
-        int ans =0,prev=0;
-        map<int,int>mpp;
-        int j=99;
-        while( j<=n){
-            int ones = cntOne(j)*100 + 20;
-            mpp[j]=ones+prev;
-            // cout<<mpp[j]<<" "<<j<<endl;
-            prev=mpp[j];
-            j+=100;
-        }
-        int i=n;
-        // cout<<mpp[j-100]<<" "<<j-100<<" "<<n<<" "<<endl;
-        for(i=n;(i+1)%100!=0;i--){
-            ans+=cntOne(i);
-        }
-        // int temp=n%100;
-        // ans+=cntOne(n-temp);
-        // if(n%100==0 && n>99)ans++;
-        return mpp[j-100]+ans;
+        memset(dp,-1,sizeof(dp));
+        string s = to_string(n);
+        return solve(s,0,1,0);
     }
 };

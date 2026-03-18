@@ -8,7 +8,7 @@ public:
            for(int j=0;j<n;j++){
              if(j>0)grid[i][j]+=grid[i][j-1];
              if(i>0)grid[i][j]+=grid[i-1][j];
-             if(i > 0 && j > 0) grid[i][j] -= grid[i-1][j-1];
+            //  if(i > 0 && j > 0) grid[i][j] -= grid[i-1][j-1];
            }
         }
         int ans=0;

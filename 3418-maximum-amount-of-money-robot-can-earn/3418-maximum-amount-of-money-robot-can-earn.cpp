@@ -1,51 +1,21 @@
-using namespace std;
-
 class Solution {
 public:
     int maximumAmount(vector<vector<int>>& coins) {
-        int m = coins.size();
-        int n = coins[0].size();
-
-        // dp[i][j][k] = max coins from (i,j) with k neutralizations left
-        vector<vector<vector<int>>> dp(m, vector<vector<int>>(n, vector<int>(3, -1e9)));
-
-        // Base case (destination)
-        for (int k = 0; k <= 2; k++) {
-            if (coins[m-1][n-1] < 0 && k > 0)
-                dp[m-1][n-1][k] = 0;
-            else
-                dp[m-1][n-1][k] = coins[m-1][n-1];
+        int m = coins.size(), n = coins[0].size();
+        vector f(n + 1, vector<int>(3, INT_MIN));
+        for(int k = 0; k < 3; k++){
+            f[1][k] = 0;
         }
-
-        // Fill from bottom-right → top-left
-        for (int i = m - 1; i >= 0; i--) {
-            for (int j = n - 1; j >= 0; j--) {
-                if (i == m-1 && j == n-1) continue;
-
-                for (int k = 0; k <= 2; k++) {
-                    int down = (i+1 < m) ? dp[i+1][j][k] : -1e9;
-                    int right = (j+1 < n) ? dp[i][j+1][k] : -1e9;
-
-                    int best = -1e9;
-
-                    if (coins[i][j] >= 0) {
-                        best = coins[i][j] + max(down, right);
-                    } else {
-                        // neutralize
-                        if (k > 0) {
-                            int downN = (i+1 < m) ? dp[i+1][j][k-1] : -1e9;
-                            int rightN = (j+1 < n) ? dp[i][j+1][k-1] : -1e9;
-                            best = max(downN, rightN);
-                        }
-                        // take negative
-                        best = max(best, coins[i][j] + max(down, right));
-                    }
-
-                    dp[i][j][k] = best;
-                }
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                int x = coins[i][j];
+                f[j + 1][2] = max(max(f[j + 1][2], f[j][2]) + x, max(f[j + 1][1], f[j][1]));
+                f[j + 1][1] = max(max(f[j + 1][1], f[j][1]) + x, max(f[j + 1][0], f[j][0]));
+                f[j + 1][0] = max(f[j + 1][0], f[j][0]) + x;
             }
         }
-
-        return dp[0][0][2];
+        return f[n][2];
     }
+    // time complexity: O(mn)
+    // space complexity: O(n)
 };

@@ -1,33 +1,37 @@
 class Solution {
 public:
+    long long dp[101][101];
+
+    long long solve(int i, int j, vector<int>& robot, vector<vector<int>>& factory) {
+        // All robots assigned
+        if (i == robot.size()) return 0;
+
+        // No factories left
+        if (j == factory.size()) return 1e15;
+
+        if (dp[i][j] != -1) return dp[i][j];
+
+        long long ans = solve(i, j + 1, robot, factory); // skip factory
+
+        long long dist = 0;
+        int pos = factory[j][0];
+        int cap = factory[j][1];
+
+        // Try assigning k robots to this factory
+        for (int k = 0; k < cap && i + k < robot.size(); k++) {
+            dist += abs(robot[i + k] - pos);
+            ans = min(ans, dist + solve(i + k + 1, j + 1, robot, factory));
+        }
+
+        return dp[i][j] = ans;
+    }
+
     long long minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
         sort(robot.begin(), robot.end());
         sort(factory.begin(), factory.end());
 
-        int n = robot.size();
-        int m = factory.size();
+        memset(dp, -1, sizeof(dp));
 
-        const long long INF = 1e18;
-        vector<vector<long long>> dp(n + 1, vector<long long>(m + 1, INF));
-
-        for (int j = 0; j <= m; j++)
-            dp[0][j] = 0;
-
-        for (int j = 1; j <= m; j++) {
-            int pos = factory[j-1][0];
-            int limit = factory[j-1][1];
-
-            for (int i = 0; i <= n; i++) {
-                dp[i][j] = dp[i][j-1]; // skip factory
-
-                long long dist = 0;
-                for (int k = 1; k <= limit && i - k >= 0; k++) {
-                    dist += abs(robot[i-k] - pos);
-                    dp[i][j] = min(dp[i][j], dp[i-k][j-1] + dist);
-                }
-            }
-        }
-
-        return dp[n][m];
+        return solve(0, 0, robot, factory);
     }
 };

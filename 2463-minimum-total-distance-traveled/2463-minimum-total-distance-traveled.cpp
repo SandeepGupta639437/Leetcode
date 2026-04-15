@@ -1,9 +1,10 @@
 class Solution {
 public:
-    long long dp[101][101];
+    using ll = long long;
+    ll dp[101][101];
     int n,m;
 
-    long long solve(int i, int j, vector<int>& robot, vector<vector<int>>& factory) {
+    ll solve(int i, int j, vector<int>& robot, vector<vector<int>>& factory) {
         // All robots assigned
         if (i == n) return 0;
 
@@ -12,9 +13,9 @@ public:
 
         if (dp[i][j] != -1) return dp[i][j];
 
-        long long ans = solve(i, j + 1, robot, factory); // skip factory
+        ll ans = solve(i, j + 1, robot, factory); // skip factory
 
-        long long dist = 0;
+        ll dist = 0;
         int pos = factory[j][0];
         int cap = factory[j][1];
 
@@ -27,7 +28,7 @@ public:
         return dp[i][j] = ans;
     }
 
-    long long minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
+    ll minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
         sort(robot.begin(), robot.end());
         sort(factory.begin(), factory.end());
         n = robot.size();

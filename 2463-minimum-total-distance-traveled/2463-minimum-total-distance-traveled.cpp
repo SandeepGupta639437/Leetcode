@@ -1,13 +1,14 @@
 class Solution {
 public:
     long long dp[101][101];
+    int n,m;
 
     long long solve(int i, int j, vector<int>& robot, vector<vector<int>>& factory) {
         // All robots assigned
-        if (i == robot.size()) return 0;
+        if (i == n) return 0;
 
         // No factories left
-        if (j == factory.size()) return 1e15;
+        if (j == m) return 1e15;
 
         if (dp[i][j] != -1) return dp[i][j];
 
@@ -29,6 +30,8 @@ public:
     long long minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
         sort(robot.begin(), robot.end());
         sort(factory.begin(), factory.end());
+        n = robot.size();
+        m = factory.size();
 
         memset(dp, -1, sizeof(dp));
 

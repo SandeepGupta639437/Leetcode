@@ -1,21 +1,22 @@
 class Solution {
 public: 
-    int n;
-    int t[2501][2501];
-    int solve(vector<int>& nums,int i,int p){
-        if(i>=n)return 0;
-        if(p!=-1 && t[i][p]!=-1)return t[i][p];
-        int take =0;
-        if(p==-1 || nums[i]>nums[p]){
-            take = 1+solve(nums,i+1,i);
+    const static int N = 25e2+10;
+    int dp[N];
+    int lis(vector<int>& a,int i){
+        if(dp[i]!=-1)return dp[i];
+        int ans =1;
+        for(int j=0;j<i;j++){
+            if(a[i]>a[j])ans = max(ans,lis(a,j)+1);
         }
-        int skip = solve(nums, i+1,p);
-        if(p!=-1) t[i][p]= max(take,skip);
-        return max(take,skip);
+        return dp[i]=ans;
     }
-    int lengthOfLIS(vector<int>& nums) {
-        memset(t,-1,sizeof(t));
-        n=nums.size();
-        return solve(nums,0,-1);
+    int lengthOfLIS(vector<int>& a) {
+        memset(dp,-1,sizeof(dp));
+        int n=a.size();
+        int ans=0;
+        for(int i=0;i<n;i++){
+            ans = max(ans,lis(a,i));
+        }
+        return ans;
     }
 };

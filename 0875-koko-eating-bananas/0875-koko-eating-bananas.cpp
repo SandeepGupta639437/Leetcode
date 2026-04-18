@@ -11,14 +11,8 @@ public:
             return false;
     }
     int minEatingSpeed(vector<int>& piles, int h) {
-          int maxi = INT_MIN;
-          int n = piles.size();
-           //find the maximum:
-          for (int i = 0; i < n; i++) {
-             maxi = max(maxi, piles[i]);
-           }
          int low=0;
-         int high=maxi;
+         int high=1e9;
         while (low<=high) {
             int mid=(low+high)/2;
             if (check(mid,piles,h)) {

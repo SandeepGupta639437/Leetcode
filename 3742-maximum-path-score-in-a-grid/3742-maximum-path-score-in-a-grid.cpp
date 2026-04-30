@@ -3,28 +3,28 @@ public:
     int dp[201][201][201];
     int n, m;
 
-    int solve(int i, int j, vector<vector<int>>& grid, int k, int cst) {
-        if (i >= m || j >= n) return INT_MIN;
+    // int solve(int i, int j, vector<vector<int>>& grid, int k, int cst) {
+    //     if (i >= m || j >= n) return INT_MIN;
 
-        int new_cost = cst + (grid[i][j]>0);
+    //     int new_cost = cst + (grid[i][j]>0);
 
-        if (new_cost > k) return INT_MIN;
+    //     if (new_cost > k) return INT_MIN;
 
-        if (i == m-1 && j == n-1) {
-            return grid[i][j];
-        }
+    //     if (i == m-1 && j == n-1) {
+    //         return grid[i][j];
+    //     }
 
-        if (dp[i][j][cst] != -1) return dp[i][j][cst];
+    //     if (dp[i][j][cst] != -1) return dp[i][j][cst];
 
-        int right = solve(i, j+1, grid, k, new_cost);
-        int down  = solve(i+1, j, grid, k, new_cost);
+    //     int right = solve(i, j+1, grid, k, new_cost);
+    //     int down  = solve(i+1, j, grid, k, new_cost);
 
-        int best = max(right, down);
+    //     int best = max(right, down);
 
-        if(best==INT_MIN)return dp[i][j][cst] = INT_MIN;
+    //     if(best==INT_MIN)return dp[i][j][cst] = INT_MIN;
 
-        return dp[i][j][cst] = grid[i][j] + best;
-    }
+    //     return dp[i][j][cst] = grid[i][j] + best;
+    // }
 
     int maxPathScore(vector<vector<int>>& grid, int k) {
         m = grid.size();
@@ -32,8 +32,38 @@ public:
 
         memset(dp, -1, sizeof(dp));
 
-        int result =  solve(0, 0, grid, k, 0);
-        if(result == INT_MIN)return -1;
-        return result;
+        for(int i = m-1;i>=0;i--){
+            for(int j = n-1;j>=0;j--){
+                for(int c = k;c>=0;c--){
+                    int newCost = c + (grid[i][j]>0);
+
+                    if(newCost>k)continue;
+
+                    if(i==m-1 && j==n-1){
+                        dp[i][j][c] = grid[i][j];
+                        continue;
+                    }
+
+                    int right=-1,down = -1;
+
+                    if(i+1<m)
+                        down = dp[i+1][j][newCost];
+                    if(j+1<n)
+                        right = dp[i][j+1][newCost];
+
+                    int best = max(right,down);
+
+                    if(best!=-1){
+                        dp[i][j][c] = best + grid[i][j];
+                    }
+                }
+            }
+        }
+
+        return dp[0][0][0];
+
+        // int result =  solve(0, 0, grid, k, 0);
+        // if(result == INT_MIN)return -1;
+        // return result;
     }
 };

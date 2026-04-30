@@ -1,6 +1,6 @@
 class Solution {
 public:
-    int dp[201][201][201];
+    // int dp[201][201][1001];
     int n, m;
 
     // int solve(int i, int j, vector<vector<int>>& grid, int k, int cst) {
@@ -30,7 +30,9 @@ public:
         m = grid.size();
         n = grid[0].size();
 
-        memset(dp, -1, sizeof(dp));
+        vector<vector<vector<int>>> dp(m+1, vector<vector<int>>(n+1, vector<int>(k+1, -1)));
+
+        // memset(dp, -1, sizeof(dp));
 
         for(int i = m-1;i>=0;i--){
             for(int j = n-1;j>=0;j--){

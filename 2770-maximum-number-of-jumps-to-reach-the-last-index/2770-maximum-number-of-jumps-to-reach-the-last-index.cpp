@@ -1,32 +1,33 @@
 class Solution {
 public:
     int n;
-    vector<int> dp;
+    int dp[1001][1001];
 
-    int solve(int i, vector<int>& nums, int target) {
+    int solve(int i, int j, vector<int>& nums, int target) {
+
         if (i == n - 1) return 0;
 
-        if (dp[i] != -1) return dp[i];
+        if (j >= n) return -1e9;
 
-        int ans = -1;
+        int take = -1e9, skip = -1e9;
 
-        for (int j = i + 1; j < n; j++) {
-            if (abs(nums[j] - nums[i]) <= target) {
-                int next = solve(j, nums, target);
+        if(dp[i][j]!=-1)return dp[i][j];
 
-                if (next != -1) {
-                    ans = max(ans, 1 + next);
-                }
-            }
+        if (abs(nums[j] - nums[i]) <= target) {
+            take = 1 + solve(j, j + 1, nums, target);
         }
 
-        return dp[i] = ans;
+        skip = solve(i, j + 1, nums, target);
+
+        return dp[i][j] = max(take, skip);
     }
 
     int maximumJumps(vector<int>& nums, int target) {
         n = nums.size();
-        dp.assign(n, -1);
+        memset(dp,-1,sizeof(dp));
 
-        return solve(0, nums, target);
+        int ans = solve(0, 1, nums, target);
+
+        return (ans < 0) ? -1 : ans;
     }
 };

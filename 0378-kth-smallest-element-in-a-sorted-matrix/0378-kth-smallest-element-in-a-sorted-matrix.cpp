@@ -9,7 +9,8 @@ public:
             new1.push_back(matrix[i][j]);
          }
         }
-        sort(new1.begin(),new1.end());
+        // sort(new1.begin(),new1.end());
+        nth_element(new1.begin(), new1.begin() + k - 1, new1.end());
         int ans=new1[k-1];
         return ans;
     }

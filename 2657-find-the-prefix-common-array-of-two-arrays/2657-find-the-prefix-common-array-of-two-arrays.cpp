@@ -4,16 +4,13 @@ public:
         int n=A.size();
         int count=0;
         vector<int>c(n,0);
+        vector<int>freq(n+1,0);
         for(int i=0;i<n;i++){
-            bool found=false;
-            for(int j=0;j<n;j++){
-                if(A[i]==B[j]){
-                    found=true;
-                }
-                if(found && j>=i){
-                    c[j]++;
-                }
-            }
+            freq[A[i]]++;
+            if(freq[A[i]]==2)count++;
+            freq[B[i]]++;
+            if(freq[B[i]]==2)count++;
+            c[i]=count;
         }
         return c;
     }

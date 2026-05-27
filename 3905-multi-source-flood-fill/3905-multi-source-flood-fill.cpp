@@ -49,12 +49,8 @@ public:
                     int ni = i + dir[0];
                     int nj = j + dir[1];
 
-                    if(ni >= 0 && nj >= 0 &&
-                       ni < n && nj < m &&
-                       grid[ni][nj] == 0){
-
+                    if(ni >= 0 && nj >= 0 && ni < n && nj < m &&  grid[ni][nj] == 0){
                         grid[ni][nj] = grid[i][j];
-
                         que.push({ni,nj});
                     }
                 }

@@ -1,23 +1,14 @@
 class Solution {
 public:
-
-    bool dfs(vector<int>& arr, int i){
-
-        int n = arr.size();
-
-        if(i < 0 || i >= n || arr[i]<0)
-            return false;
-
-        if(arr[i] == 0)
-            return true;
-
-        arr[i] *= -1;
-
-        return dfs(arr, i + arr[i]) || dfs(arr, i - arr[i]);
+    int n;
+    bool solve(vector<int>&arr,int i){
+        if(i<0 || i>=n || arr[i]<0)return false;
+        if(arr[i]==0)return true;
+        arr[i] *= -1; 
+        return  solve(arr,i-arr[i]) ||  solve(arr,i+arr[i]);
     }
-
     bool canReach(vector<int>& arr, int start) {
-
-        return dfs(arr, start);
+        n = arr.size();
+        return solve(arr,start);
     }
 };

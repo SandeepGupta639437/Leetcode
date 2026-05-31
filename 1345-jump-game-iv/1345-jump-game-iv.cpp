@@ -1,61 +1,47 @@
 class Solution {
 public:
     int minJumps(vector<int>& arr) {
+
         int n = arr.size();
-        if(n == 1)
-            return 0;
 
         unordered_map<int, vector<int>> mp;
+
         for(int i = 0; i < n; i++) {
             mp[arr[i]].push_back(i);
         }
 
-        queue<int> q;
         vector<int> vis(n, 0);
 
-        q.push(0);
+        queue<pair<int,int>> q;
+        q.push({0, 0});
         vis[0] = 1;
-
-        int steps = 0;
 
         while(!q.empty()) {
 
-            int sz = q.size();
+            auto [idx, steps] = q.front();
+            q.pop();
 
-            while(sz--) {
+            if(idx == n - 1)
+                return steps;
 
-                int node = q.front();
-                q.pop();
-
-                if(node == n - 1)
-                    return steps;
-
-                // i - 1
-                if(node - 1 >= 0 && !vis[node - 1]) {
-                    vis[node - 1] = 1;
-                    q.push(node - 1);
-                }
-
-                // i + 1
-                if(node + 1 < n && !vis[node + 1]) {
-                    vis[node + 1] = 1;
-                    q.push(node + 1);
-                }
-
-                // same value jumps
-                for(int next : mp[arr[node]]) {
-
-                    if(!vis[next]) {
-                        vis[next] = 1;
-                        q.push(next);
-                    }
-                }
-
-                // IMPORTANT optimization
-                mp[arr[node]].clear();
+            if(idx - 1 >= 0 && !vis[idx - 1]) {
+                vis[idx - 1] = 1;
+                q.push({idx - 1, steps + 1});
             }
 
-            steps++;
+            if(idx + 1 < n && !vis[idx + 1]) {
+                vis[idx + 1] = 1;
+                q.push({idx + 1, steps + 1});
+            }
+
+            for(int next : mp[arr[idx]]) {
+                if(!vis[next]) {
+                    vis[next] = 1;
+                    q.push({next, steps + 1});
+                }
+            }
+
+            mp[arr[idx]].clear(); // important optimization
         }
 
         return -1;

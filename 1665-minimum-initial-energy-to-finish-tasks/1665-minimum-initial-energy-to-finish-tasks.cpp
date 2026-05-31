@@ -1,33 +1,24 @@
 class Solution {
 public:
-    bool possible(int mid,vector<vector<int>>& tasks){
-        int energy = mid;
-        for(auto it : tasks){
-            if(it[1]>energy)return false;
-            else energy-=it[0];
-        }
-        return true;
-    }
-    int minimumEffort(vector<vector<int>>& tasks) {
-        int start = 0, last = 1e9;
-        int ans = 1e9;
-       auto lambda = [](auto &task1, auto& task2) {
-            int diff1 = task1[1] - task1[0];
-            int diff2 = task2[1] - task2[0];
-
-            return diff1 > diff2;
-        };
-
-        sort(begin(tasks), end(tasks), lambda);
-
-        while(start<=last){
-            int mid = start - (start-last)/2;
-            if(possible(mid,tasks)){
-                ans = min(ans,mid);
-                last = mid-1;
-            }else{
-                start = mid + 1;
+    int minimumEffort(vector<vector<int>>& t) {
+        int l = t.size();
+        int ans = 0;
+        int remaining = 0;
+        sort(t.begin(), t.end(),
+             [](const vector<int>& a, const vector<int>& b) {
+                 return (a[1] - a[0]) > (b[1] - b[0]); // descending
+             });
+        for (int i = 0; i < l; i++) {
+            // cout << t[i][0] << "  " << t[i][1] << " "
+            //  << ((t[i][0] + 0.0) / (t[i][1])) << "  " << endl;
+            if (remaining < t[i][1]) {
+                ans += t[i][1] - remaining;
+                remaining = max(0, t[i][1] - t[i][0]);
+            } else {
+                remaining -= t[i][0];
             }
+
+            // cout << ((t[i][0]+ 0.0) / (t[i][1])) << "  " << endl ;
         }
         return ans;
     }

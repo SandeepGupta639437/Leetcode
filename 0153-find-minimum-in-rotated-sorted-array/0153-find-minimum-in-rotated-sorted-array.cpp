@@ -5,15 +5,15 @@ public:
         int s = 0, e = n-1;
         int ans = nums[0];
         while(s<e){
-            int mid = s-(e-s)/2;
-            if(nums[s]<nums[e]){
-                ans = min(ans,nums[0]);
+            int mid = s+(e-s)/2;
+            if(nums[s]<=nums[mid]){
+                ans = min(ans,nums[s]);
                 s = mid+1;
             }else{
                 ans = min(ans,nums[mid]);
                 e = mid - 1;
             }
         }
-        return ans;
+        return min(nums[s],ans);
     }
 };

@@ -4,24 +4,28 @@ public:
         int ans = INT_MAX;
         int n = landStartTime.size();
         int m = waterStartTime.size();
-
+        
+        int finishlandMin = INT_MAX;
+        int finishwaterMin = INT_MAX;
         for(int i=0;i<n;i++){
-            int temp = landStartTime[i]+landDuration[i];
-            for(int j=0;j<m;j++){
-                if(temp>=waterStartTime[j])
-                    ans = min(ans,temp+waterDuration[j]);
-                else
-                    ans = min(ans,waterStartTime[j]+waterDuration[j]);
-            }
+            finishlandMin = min(finishlandMin,landStartTime[i]+landDuration[i]);
         }
         for(int i=0;i<m;i++){
-            int temp = waterStartTime[i]+waterDuration[i];
-            for(int j=0;j<n;j++){
-                if(temp>=landStartTime[j])
-                    ans = min(ans,temp+landDuration[j]);
-                else
-                    ans = min(ans,landStartTime[j]+landDuration[j]);
-            }
+            finishwaterMin = min(finishwaterMin,waterStartTime[i]+waterDuration[i]);
+        }
+        int temp = finishlandMin;
+        for(int j=0;j<m;j++){
+            if(temp>=waterStartTime[j])
+                ans = min(ans,temp+waterDuration[j]);
+            else
+                ans = min(ans,waterStartTime[j]+waterDuration[j]);
+        }
+        temp = finishwaterMin;
+        for(int j=0;j<n;j++){
+            if(temp>=landStartTime[j])
+                ans = min(ans,temp+landDuration[j]);
+            else
+                ans = min(ans,landStartTime[j]+landDuration[j]);
         }
         return ans;
     }

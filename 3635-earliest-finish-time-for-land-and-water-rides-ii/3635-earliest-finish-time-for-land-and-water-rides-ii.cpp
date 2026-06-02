@@ -4,8 +4,7 @@ public:
         int ans = INT_MAX;
         int n = landStartTime.size();
         int m = waterStartTime.size();
-        // vector<int>finishland(n);
-        // vector<int>finishWater(m);
+        
         int finishlandMin = INT_MAX;
         int finishwaterMin = INT_MAX;
         for(int i=0;i<n;i++){

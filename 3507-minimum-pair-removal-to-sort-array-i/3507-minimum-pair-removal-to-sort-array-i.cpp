@@ -1,16 +1,9 @@
 class Solution {
 public:
-    bool sorted(vector<int>& nums) {
-        for (int i = 1; i < nums.size(); i++) {
-            if (nums[i] < nums[i - 1]) return false;
-        }
-        return true;
-    }
-
     int minimumPairRemoval(vector<int>& nums) {
         int ans = 0;
 
-        while (!sorted(nums)) {
+        while(!is_sorted(nums.begin(), nums.end())) {
             int idx = 0;
             int mn = nums[0] + nums[1];
 

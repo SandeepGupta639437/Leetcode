@@ -1,27 +1,56 @@
+//Approach-3 (Bottom Up + Prefix Sum) - TLE
+//T.C : O(n*m)
+//S.C : O(n*m)
 class Solution {
 public:
+    int MOD = 1e9+7;
+    typedef long long ll;
+
     int zigZagArrays(int n, int l, int r) {
-        long long MOD = 1e9 + 7;
-        int m = r-l+1;
-        vector<long long>dp(m,1);
-        bool reverseC = true;
-        for(int len = 2; len <= n; len++){
-            long long sum = 0;
-            if(reverseC){
-                for(int i = m-1 ; i >= 0; i--){
-                    int val = dp[i];
-                    dp[i] = sum;
-                    sum = (sum+val) % MOD;
-                }
-            }else{
-                for(int i = 0; i < m; i++){
-                    int val = dp[i];
-                    dp[i] = sum;
-                    sum = (sum+val)%MOD;
-                }
-            }
-            reverseC = !reverseC;
+        int N = n;
+        int M = r-l+1;
+
+        ll t[2001][2001][2];
+
+        //Base Case
+        for(int prevVal = 1; prevVal <= M; prevVal++) {
+            t[N][prevVal][0] = 1;
+            t[N][prevVal][1] = 1;
         }
-        return ((accumulate(dp.begin(),dp.end(),0LL)%MOD) << 1)% MOD;
+
+        for(int i = N-1; i >= 0; i--) {
+
+            vector<ll> prefDir0(M+1, 0);
+            vector<ll> prefDir1(M+1, 0);
+
+            for(int prevVal = 1; prevVal <= M; prevVal++) {
+                
+                prefDir0[prevVal] = (prefDir0[prevVal-1] + t[i+1][prevVal][0]) % MOD;
+
+                prefDir1[prevVal] = (prefDir1[prevVal-1] + t[i+1][prevVal][1]) % MOD;
+
+            }
+
+            for(int prevVal = 1; prevVal <= M; prevVal++) {
+                
+                t[i][prevVal][1] = (prefDir0[M] - prefDir0[prevVal] + MOD) % MOD;
+
+                t[i][prevVal][0] = prefDir1[prevVal-1];
+
+            }
+        }
+
+        ll result = 0;
+
+        for(int startVal = 1; startVal <= M; startVal++) {
+            //a < b > c < d ...
+            result = (result + t[1][startVal][1]) % MOD;
+
+            //a > b < c > d...
+            result = (result + t[1][startVal][0]) % MOD;
+        }
+
+        return result;
+        
     }
 };

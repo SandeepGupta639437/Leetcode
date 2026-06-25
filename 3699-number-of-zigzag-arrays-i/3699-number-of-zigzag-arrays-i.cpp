@@ -6,6 +6,8 @@ public:
     int MOD = 1e9+7;
     typedef long long ll;
 
+    
+
     int zigZagArrays(int n, int l, int r) {
         int N = n;
         int M = r-l+1;

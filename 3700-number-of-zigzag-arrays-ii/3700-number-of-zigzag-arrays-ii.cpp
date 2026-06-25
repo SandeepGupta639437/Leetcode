@@ -1,23 +1,25 @@
 class Solution {
 public:
-    static constexpr long long MOD = 1000000007;
+    using ll = long long;
+    const ll MOD = 1e9 + 7;
 
-    using Matrix = vector<vector<long long>>;
+    using Matrix = vector<vector<ll>>;
 
     Matrix multiply(const Matrix& A, const Matrix& B) {
         int n = A.size();
 
-        Matrix C(n, vector<long long>(n, 0));
+        Matrix C(n, vector<ll>(n, 0));
 
-        for (int i = 0; i < n; i++) {
-            for (int k = 0; k < n; k++) {
-                if (A[i][k] == 0) continue;
+        for(int i = 0; i < n; i++) {
+            for(int k = 0; k < n; k++) {
 
-                for (int j = 0; j < n; j++) {
-                    if (B[k][j] == 0) continue;
+                if(A[i][k] == 0) continue;
 
-                    C[i][j] =
-                        (C[i][j] + A[i][k] * B[k][j]) % MOD;
+                for(int j = 0; j < n; j++) {
+
+                    if(B[k][j] == 0) continue;
+
+                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
                 }
             }
         }
@@ -28,88 +30,89 @@ public:
     Matrix power(Matrix base, long long exp) {
         int n = base.size();
 
-        Matrix res(n, vector<long long>(n, 0));
+        Matrix result(n, vector<ll>(n, 0));
 
-        for (int i = 0; i < n; i++) {
-            res[i][i] = 1;
-        }
+        for(int i = 0; i < n; i++)
+            result[i][i] = 1;
 
-        while (exp) {
-            if (exp & 1)
-                res = multiply(res, base);
+        while(exp) {
+
+            if(exp & 1)
+                result = multiply(result, base);
 
             base = multiply(base, base);
 
             exp >>= 1;
         }
 
-        return res;
+        return result;
     }
 
-    vector<long long> multiplyVec(
-        const Matrix& A,
-        const vector<long long>& v
-    ) {
+    vector<ll> multiplyMatVec( const Matrix& A , const vector<ll>& v ) {
         int n = A.size();
 
-        vector<long long> res(n, 0);
+        vector<ll> res(n, 0);
 
-        for (int i = 0; i < n; i++) {
-            long long cur = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
 
-            for (int j = 0; j < n; j++) {
-                cur = (cur + A[i][j] * v[j]) % MOD;
+                if(A[i][j] == 0) continue;
+
+                res[i] = (res[i] + A[i][j] * v[j]) % MOD;
             }
-
-            res[i] = cur;
         }
 
         return res;
     }
 
-    int zigZagArrays(int n, int l, int r) {
+    int zigZagArrays(long long n, int l, int r) {
 
-        int m = r - l + 1;
+        int M = r - l + 1;
 
-        if (n == 1) return m;
+        if(n == 1)
+            return M;
 
-        int S = 2 * m;
+        int SZ = 2 * M;
 
-        Matrix T(S, vector<long long>(S, 0));
+        Matrix T(SZ, vector<ll>(SZ, 0));
 
-        for (int x = 0; x < m; x++) {
-
-            int upState = m + x;
-            int downState = x;
-
-            for (int y = x + 1; y < m; y++) {
-                T[y][upState] = 1;
-            }
-
-            for (int y = 0; y < x; y++) {
-                T[m + y][downState] = 1;
+        // U(j) = sum_{k<j} D(k)
+        for(int j = 1; j <= M; j++) {
+            for(int k = 1; k < j; k++) {
+                T[j - 1][M + (k - 1)] = 1;
             }
         }
 
-        Matrix P = power(T, n - 1);
-
-        vector<long long> startUp(S, 0);
-        vector<long long> startDown(S, 0);
-
-        for (int x = 0; x < m; x++) {
-            startUp[m + x] = 1;
-            startDown[x] = 1;
+        // D(j) = sum_{k>j} U(k)
+        for(int j = 1; j <= M; j++) {
+            for(int k = j + 1; k <= M; k++) {
+                T[M + (j - 1)][k - 1] = 1;
+            }
         }
 
-        auto A = multiplyVec(P, startUp);
-        auto B = multiplyVec(P, startDown);
+        /*
+            Base layer:
+            length = 2
 
-        long long ans = 0;
+            U(j) = count(k < j) = j-1
+            D(j) = count(k > j) = M-j
+        */
 
-        for (long long x : A)
-            ans = (ans + x) % MOD;
+        vector<ll> base(SZ, 0);
 
-        for (long long x : B)
+        for(int j = 1; j <= M; j++) {
+            base[j - 1] = j - 1;
+            base[M + j - 1] = M - j;
+        }
+
+        Matrix P = power(T, n - 2);
+
+        vector<ll> finalState =
+            multiplyMatVec(P, base);
+
+        ll ans = 0;
+
+        for(ll x : finalState)
             ans = (ans + x) % MOD;
 
         return (int)ans;

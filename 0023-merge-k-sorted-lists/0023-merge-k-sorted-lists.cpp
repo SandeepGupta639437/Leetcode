@@ -11,22 +11,27 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        priority_queue< pair<int, ListNode*>,vector<pair<int, ListNode*>>,greater<pair<int, ListNode*>>> pq;
+        struct Compare {
+            bool operator()(ListNode* a, ListNode* b) const {
+                return a->val > b->val; 
+            }
+        };
+        priority_queue< ListNode*,vector<ListNode*>,Compare> pq;
         for (auto it : lists) {
             if (it)
-                pq.push({it->val, it});
+                pq.push(it);
         }
         ListNode dummy(-1);
         ListNode* tail = &dummy;
         while (!pq.empty()) {
-            auto [val, node] = pq.top();
+            auto node = pq.top();
             pq.pop();
 
             tail->next = node;
             tail = tail->next;
 
             if (node->next)
-                pq.push({node->next->val, node->next});
+                pq.push(node->next);
         }
         return dummy.next;
     }

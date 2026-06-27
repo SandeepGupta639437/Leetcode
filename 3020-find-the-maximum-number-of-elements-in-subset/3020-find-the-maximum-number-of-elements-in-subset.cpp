@@ -11,16 +11,14 @@ public:
     }
     int maximumLength(vector<int>& nums) {
         map<int,int>mpp;
-        set<int>st;
         for(int it:nums){
             mpp[it]++;
-            if(it!=1)st.insert(it);
         }
 
         int ans = (mpp[1]%2)?mpp[1]:mpp[1]-1;
 
-        for(int it:st){
-            ans = max(ans,solve(it,mpp));
+        for(auto [x,y]:mpp){
+            if(x!=1)ans = max(ans,solve(x,mpp));
         }
         return ans;
     }

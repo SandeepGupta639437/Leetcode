@@ -17,14 +17,14 @@ public:
         for(int i=0;i<n;i++){
             pq.push({matrix[i][0], {i, 0}});
         }
-        while(k--){
+        while (--k) {
             auto [val, pos] = pq.top();
             auto [row, col] = pos;
             pq.pop();
-            if (col+1<m) {
+
+            if (col + 1 < m) {
                 pq.push({matrix[row][col + 1], {row, col + 1}});
             }
-            if(k==0)return val;
         }
         return pq.top().first;
     }

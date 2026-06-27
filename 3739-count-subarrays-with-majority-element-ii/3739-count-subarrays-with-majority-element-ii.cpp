@@ -1,25 +1,25 @@
 class Solution {
 public:
-    typedef long long ll ;
+    using ll=long long;
     long long countMajoritySubarrays(vector<int>& nums, int target) {
-        int n = nums.size();
-        ll cumSum = 0;
-        map<int,int>mp;
-        ll validLeft = 0;
-        ll result = 0;
-        mp[0] = 1;
-        for(int i=0;i<n;i++){
-            if(nums[i]==target){
-                validLeft += mp[cumSum];
-                cumSum++;
+        int n=nums.size();
+        vector<int>prefix(2*n+1,0);
+        prefix[n]=1;
+        int cnt=n;
+        ll presum=0;
+        ll ans=0;
+        for (int i=0;i<nums.size();i++){
+            if (nums[i]==target){
+                presum+=prefix[cnt];
+                cnt++;
+                prefix[cnt]++;
+            }else{
+                cnt--;
+                presum-=prefix[cnt];
+                prefix[cnt]++;
             }
-            else{
-                cumSum--;
-                validLeft -= mp[cumSum];
-            }
-            mp[cumSum]++;
-            result+=validLeft;
+            ans+=presum;
         }
-        return result;
+        return ans;
     }
 };

@@ -1,29 +1,39 @@
 class Solution {
 public:
-    bool canReach(string s, int minJump, int maxJump) {
-        int n = s.length();
+    int dp[100001];
+    bool solve(int i,string& s,int minJump,int maxJump){
+        int n = s.size();
+        if(i==n-1)return true;
 
-        vector<int> t(n, 0);
-        //t[i] > 0 : possible to reach i
-        // == 0 : not possible to reach i
+        if(dp[i]!=-1)return dp[i];
 
-        t[0] = 1;
-        int count = 0;
-
-        for(int j = 1; j <= n-1; j++) {
-            if(j - minJump >= 0) {
-                count += t[j - minJump];
-            }
-
-            if(j - maxJump - 1 >= 0) {
-                count -= t[j - maxJump - 1];
-            }
-
-            if(count > 0 && s[j] == '0') {
-                t[j] = 1;
+        for(int jump = minJump; jump<= maxJump; jump++){
+            if(i+jump<n && s[i+jump]=='0'){
+                if(solve(i+jump,s,minJump,maxJump))return dp[i] = true;
             }
         }
-
-        return t[n-1] > 0;
+        return dp[i] = false;
+    }
+    bool canReach(string s, int minJump, int maxJump) {
+        int n = s.size();
+        memset(dp,0,sizeof(dp));
+        // vector<int> prefix(n + 1, 0);
+        // prefix[n-1] = true;
+        
+        dp[0] = 1;
+        int count =0;
+        for(int i=1;i<n;i++){
+            if(i-minJump >= 0){
+                count+=dp[i - minJump];
+            }
+            if(i-maxJump-1 >= 0){
+                count-=dp[i - maxJump-1];
+            }
+            if(count>0 && s[i]=='0'){
+                dp[i] = 1;
+            }
+        }
+        return dp[n-1]>0;
+        // return solve (0,s,minJump,maxJump);
     }
 };

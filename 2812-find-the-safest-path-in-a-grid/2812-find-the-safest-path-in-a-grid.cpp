@@ -37,7 +37,7 @@ public:
 
                 if(isSafe(ni,nj,n) && score[ni][nj]==INT_MAX){
 
-                    score[ni][nj]=score[i][j]+1;
+                    score[ni][nj]=min(score[ni][nj],score[i][j]+1);
                     que.push({ni,nj});
                 }
             }

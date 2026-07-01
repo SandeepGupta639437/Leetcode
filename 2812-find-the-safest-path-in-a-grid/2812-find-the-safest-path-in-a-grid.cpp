@@ -1,71 +1,82 @@
 class Solution {
 public:
-    vector<int> roww = {0,0,-1,1};
-    vector<int> coll = {-1,1,0,0};
+    typedef pair<int,int> P;
 
-    void bfs(vector<vector<int>>& grid,vector<vector<int>>& score,int n) {
-        queue<pair<int, int>> q;
-        //finding all the thieves
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++){
-                if(grid[i][j]) {
-                    score[i][j] = 0;
-                    q.push({i, j});
-                }
-            }
-        }
-        //bfs from every thief to find distance from nearest thief
-        while(!q.empty()){
-            auto t = q.front();
-            q.pop();
+    vector<vector<int>> direction{{-1,0},{1,0},{0,-1},{0,1}};
 
-            int x = t.first, y = t.second;
-            int s = score[x][y];
-
-            for(int i =0; i < 4; i++){
-                int newX = x + roww[i];
-                int newY = y + coll[i];
-
-                if(newX >= 0 && newX < n && newY >= 0 && newY < n && score[newX][newY] > 1 + s) { 
-
-                    score[newX][newY] = 1 + s;
-                    q.push({newX, newY});
-                }
-            }
-        }
+    bool isSafe(int i,int j,int n){
+        return i>=0 && j>=0 && i<n && j<n;
     }
 
     int maximumSafenessFactor(vector<vector<int>>& grid) {
+
         int n = grid.size();
-        if(grid[0][0] || grid[n - 1][n - 1]) return 0;
 
-        vector<vector<int>> score(n,vector<int>(n,INT_MAX));
-        bfs(grid, score, n);
-        vector<vector<bool>> vis(n, vector<bool>(n, false));
+        queue<P> que;
+        vector<vector<int>> score(n, vector<int>(n, INT_MAX));
 
-        priority_queue<pair<int,pair<int,int>>> pq;
-        pq.push({score[0][0], {0,0}});
-
-        while(!pq.empty()){
-            auto temp = pq.top().second;
-            auto safe = pq.top().first;
-            pq.pop();
-
-            if(temp.first == n - 1 && temp.second == n - 1) return safe;
-            vis[temp.first][temp.second] = true;
-
-            for(int i = 0; i < 4; i++) {
-                int newX = temp.first + roww[i];
-                int newY = temp.second + coll[i];
-
-                if(newX >= 0 && newX < n && newY >= 0 && newY < n && !vis[newX][newY]){
-                    int s = min(safe, score[newX][newY]);
-                    pq.push({s, {newX, newY}});
-                    vis[newX][newY] = true;
+        // Multi Source BFS
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    que.push({i,j});
+                    score[i][j]=0;
                 }
             }
         }
 
-        return -1;
+        while(!que.empty()){
+
+            auto [i,j]=que.front();
+            que.pop();
+
+            for(auto &dir:direction){
+
+                int ni=i+dir[0];
+                int nj=j+dir[1];
+
+                if(isSafe(ni,nj,n) && score[ni][nj]==INT_MAX){
+
+                    score[ni][nj]=score[i][j]+1;
+                    que.push({ni,nj});
+                }
+            }
+        }
+
+        // Max Heap : {minimum safeness till now,{x,y}}
+        priority_queue<pair<int,P>> pq;
+        vector<vector<int>> vis(n,vector<int>(n,0));
+
+        pq.push({score[0][0],{0,0}});
+        vis[0][0]=1;
+
+        while(!pq.empty()){
+
+            auto [safe,xy]=pq.top();
+            pq.pop();
+
+            int x=xy.first;
+            int y=xy.second;
+
+            if(x==n-1 && y==n-1)
+                return safe;
+
+            for(auto &dir:direction){
+
+                int nx=x+dir[0];
+                int ny=y+dir[1];
+
+                if(isSafe(nx,ny,n) && !vis[nx][ny]){
+
+                    vis[nx][ny]=1;
+
+                    int newSafe=min(safe,score[nx][ny]);
+
+                    pq.push({newSafe,{nx,ny}});
+                }
+            }
+        }
+
+        return 0;
     }
 };

@@ -1,34 +1,46 @@
+//translated using AI
 class Solution {
 public:
-    int ans = INT_MAX;
+    vector<int> parent, rank;
+    int find(int x) {
+        if (parent[x] != x)
+            parent[x] = find(parent[x]);
+        return parent[x];
+    }
 
-    void dfs(int node,
-             vector<vector<pair<int,int>>> &adj,
-             vector<bool> &vis) {
+    void unite(int a, int b) {
+        int pa = find(a);
+        int pb = find(b);
 
-        vis[node] = true;
+        if (pa == pb) return;
 
-        for (auto &[next, wt] : adj[node]) {
-
-            ans = min(ans, wt);
-
-            if (!vis[next])
-                dfs(next, adj, vis);
+        if (rank[pa] < rank[pb])
+            parent[pa] = pb;
+        else if (rank[pa] > rank[pb])
+            parent[pb] = pa;
+        else {
+            parent[pb] = pa;
+            rank[pa]++;
         }
     }
 
     int minScore(int n, vector<vector<int>>& roads) {
+        parent.resize(n + 1);
+        rank.assign(n + 1, 0);
 
-        vector<vector<pair<int,int>>> adj(n + 1);
+        for (int i = 1; i <= n; i++)
+            parent[i] = i;
 
-        for (auto &r : roads) {
-            adj[r[0]].push_back({r[1], r[2]});
-            adj[r[1]].push_back({r[0], r[2]});
+        for (auto &road : roads)
+            unite(road[0], road[1]);
+
+        int root = find(1);
+        int ans = INT_MAX;
+
+        for (auto &road : roads) {
+            if (find(road[0]) == root)
+                ans = min(ans, road[2]);
         }
-
-        vector<bool> vis(n + 1, false);
-
-        dfs(1, adj, vis);
 
         return ans;
     }

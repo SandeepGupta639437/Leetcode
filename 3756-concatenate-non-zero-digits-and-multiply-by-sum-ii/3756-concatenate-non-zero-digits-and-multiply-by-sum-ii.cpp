@@ -4,31 +4,35 @@ public:
 
     vector<int> sumAndMultiply(string s, vector<vector<int>>& queries) {
 
-        int m = s.size();
+        int n = s.size();
 
-        // Build compressed non-zero string
-        string nz = "";
-        vector<int> pos;
-        for (int i = 0; i < m; i++) {
-            if (s[i] != '0') {
-                nz += s[i];
-                pos.push_back(i);
-            }
+        vector<int> nonZeroCount(n, 0);
+        vector<long long> numUpTo(n, 0);
+        vector<long long> digitSumUpTO(n, 0);
+        vector<long long> pow10(n+1, 0);
+
+        pow10[0] = 1;
+
+        for(int i=1;i<=n;i++){
+            pow10[i]  = (pow10[i-1]*10)%MOD;
         }
 
-        int n = nz.size();
+        if(s[0] != '0')nonZeroCount[0] = 1;
 
-        // prefix number
-        vector<long long> prefNum(n + 1, 0);
-        // prefix digit sum
-        vector<long long> prefSum(n + 1, 0);
-        // powers of 10
-        vector<long long> pow10(n + 1, 1);
+        for(int i=1;i<n;i++){
+            nonZeroCount[i]  = (nonZeroCount[i-1] + ((s[i] != '0')?1:0))%MOD;
+        }
+        numUpTo[0] = s[0] -'0';
 
-        for (int i = 0; i < n; i++) {
-            prefNum[i + 1] = (prefNum[i] * 10 + (nz[i] - '0')) % MOD;
-            prefSum[i + 1] = prefSum[i] + (nz[i] - '0');
-            pow10[i + 1] = (pow10[i] * 10) % MOD;
+        for(int i=1;i<n;i++){
+            if(s[i] != '0'){
+                numUpTo[i] = (numUpTo[i-1] * 10 + s[i]-'0')%MOD;
+            }else numUpTo[i] = numUpTo[i-1];
+        }
+        digitSumUpTO[0] = s[0] -'0';
+
+        for(int i=1;i<n;i++){
+            digitSumUpTO[i] = (digitSumUpTO[i-1] + s[i]-'0')%MOD;
         }
 
         vector<int> ans;
@@ -38,19 +42,10 @@ public:
             int l = q[0];
             int r = q[1];
 
-            int L = lower_bound(pos.begin(), pos.end(), l) - pos.begin();
-            int R = upper_bound(pos.begin(), pos.end(), r) - pos.begin() - 1;
+            long long sum = digitSumUpTO[r] - ((l==0) ?  0 : digitSumUpTO[l-1]);
+            int k =  nonZeroCount[r] - ((l==0) ? 0 :nonZeroCount[l-1]);
 
-            if (L > R) {
-                ans.push_back(0);
-                continue;
-            }
-
-            long long sum = prefSum[R + 1] - prefSum[L];
-
-            int len = R - L + 1;
-
-            long long num = (prefNum[R + 1] - prefNum[L] * pow10[len] % MOD + MOD) % MOD;
+            long long num = (numUpTo[r] - ((((l==0) ? 0 : numUpTo[l-1])) * pow10[k]  % MOD )+ MOD) % MOD;
 
             ans.push_back((num * sum) % MOD);
         }

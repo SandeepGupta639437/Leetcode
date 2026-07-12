@@ -56,9 +56,7 @@ public:
 
         for (int j = 1; j < cols; j++) {
             for (int i = 0; i < n; i++) {
-                if (ancestorTable[i][j - 1] != -1)
-                    ancestorTable[i][j] =
-                        ancestorTable[ancestorTable[i][j - 1]][j - 1];
+                if (ancestorTable[i][j - 1] != -1) ancestorTable[i][j] = ancestorTable[ancestorTable[i][j - 1]][j - 1];
             }
         }
     }

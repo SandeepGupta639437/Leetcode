@@ -1,28 +1,11 @@
 class Solution {
 public:
-    int dig(string& s){
-        int l = s.length();
-        int n = 0;
-        for(int i=0;i<l;i++){
-            int d = s[i]-'0';
-            n = 1LL*n*10 + d;
-        }
-        return n;
-    }
-    vector<int> sequentialDigits(int low, int high) {
+    int digCnt(int n){int cnt = 0;while(n){n/=10;cnt++;}return cnt;}
+    
+    vector<int> sequentialDigits(int low, int high){
         string s = "123456789";
-        int startDigCnt = 0;
-        int lastDigCnt = 0;
-        int low_ = low;
-        int high_ = high;
-        while(low_){
-            low_/=10;
-            startDigCnt++;
-        }
-        while(high_){
-            high_/=10;
-            lastDigCnt++;
-        }
+        int startDigCnt = digCnt(low);
+        int lastDigCnt = digCnt(high);
         vector<int>ans;
 
         while(startDigCnt <= lastDigCnt){
@@ -32,8 +15,7 @@ public:
                 for(int j=i;j<i+k;j++){
                     num += s[j];
                 }
-                int N = dig(num) ;
-
+                int N = stoi(num) ;
                 if(N>=low && N<=high){
                     ans.push_back(N);
                 }

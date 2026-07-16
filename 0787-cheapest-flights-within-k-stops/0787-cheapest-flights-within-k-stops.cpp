@@ -20,6 +20,8 @@ public:
 
             int sz = q.size();
 
+            vector<int> temp = dist;
+
             while (sz--) {
 
                 auto [node, cost] = q.front();
@@ -27,12 +29,14 @@ public:
 
                 for (auto &[next, wt] : adj[node]) {
 
-                    if (cost + wt < dist[next]) {
-                        dist[next] = cost + wt;
+                    if (cost + wt < temp[next]) {
+                        temp[next] = cost + wt;
                         q.push({next, cost + wt});
                     }
                 }
             }
+
+            dist = temp;
             stops++;
         }
 

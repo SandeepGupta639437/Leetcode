@@ -3,9 +3,7 @@ public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
         if (intervals.empty()) return {};
 
-        sort(begin(intervals),end(intervals),[](const vector<int>a,const vector<int>b){
-            return a[0] < b[0];
-        });
+        sort(begin(intervals),end(intervals));
 
         vector<vector<int>>ans;
         ans.push_back(intervals[0]);

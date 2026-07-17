@@ -1,25 +1,26 @@
 class Solution {
 public:
     int dp[1001][1001];
-    bool check(int i,int j, string& s){
-        if(i>j)return true;
-
-        if(dp[i][j]!=-1){
-            return dp[i][j];
-        }
-
-        if(s[i]==s[j]){
-          return dp[i][j] = check(i+1,j-1,s);
-        }
-        return dp[i][j] = false;
-    }
     int countSubstrings(string s) {
         int n = s.length();
-        memset(dp,-1,sizeof(dp));
+        memset(dp,false,sizeof(dp));
         int ans = 0;
-        for(int i=0;i<n;i++){
-            for(int j=i;j<n;j++){
-                if(check(i,j,s))ans++;
+        for(int i = 0;i<n;i++){
+            dp[i][i] =true;
+            ans++;
+            if(i<n-1){
+                if(s[i]==s[i+1]){
+                    dp[i][i+1] = true; 
+                    ans++;
+                }
+            }
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i + 2; j < n; j++) {
+                if (s[i] == s[j] && dp[i + 1][j - 1]) {
+                    dp[i][j] = true;
+                    ans++;
+                }
             }
         }
         return ans;

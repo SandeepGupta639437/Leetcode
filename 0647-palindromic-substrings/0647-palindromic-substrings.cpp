@@ -1,7 +1,7 @@
 class Solution {
 public:
     int dp[1001][1001];
-    bool check(int i,int j, string s){
+    bool check(int i,int j, string& s){
         if(i>j)return true;
 
         if(dp[i][j]!=-1){

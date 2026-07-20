@@ -1,23 +1,36 @@
 class Solution {
 public:
+    int N ;
+    void rotateRight(vector<int>& v,int k){
+        k = k%N;
+        reverse(v.begin(),v.end());
+        reverse(v.begin(),v.begin()+k);
+        reverse(v.begin()+k,v.end());
+    }
     vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
         int m = grid.size();
         int n = grid[0].size();
+        N = m*n;
 
-        while(k--){
-           int last = grid[m-1][n-1];
-
-            for (int i = m-1; i >= 0; i--) {
-                for (int j = n-1; j >= 0; j--) {
-                    if (i == 0 && j == 0)
-                        grid[0][0] = last;
-                    else if (j == 0)
-                        grid[i][0] = grid[i-1][n-1];
-                    else
-                        grid[i][j] = grid[i][j-1];
-                }
+        vector<int>v(m*n);
+        int l = 0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                v[l] = grid[i][j];
+                l++;
             }
         }
+
+        rotateRight(v,k);
+        l = 0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                grid[i][j] = v[l] ;
+                l++;
+            }
+        }
+
+        
         return grid;
     }
 };

@@ -133,35 +133,25 @@ public:
 
             if (low < high) {
 
-                int firstLen =
-                    blockEnd[low] - max(blockStart[low], l) + 1;
+                int firstLen = blockEnd[low] - max(blockStart[low], l) + 1;
 
-                int lastLen =
-                    min(blockEnd[high], r) - blockStart[high] + 1;
+                int lastLen = min(blockEnd[high], r) - blockStart[high] + 1;
 
                 if (high - low == 1) {
-
                     maxPairSum = firstLen + lastLen;
 
                 } else {
+                    int pair1 = firstLen + blockSize[low + 1];
 
-                    int pair1 =
-                        firstLen + blockSize[low + 1];
+                    int pair2 = blockSize[high - 1] + lastLen;
 
-                    int pair2 =
-                        blockSize[high - 1] + lastLen;
+                    int middle = sy.query(low + 1, high - 2);
 
-                    int middle =
-                        sy.query(low + 1, high - 2);
-
-                    maxPairSum =
-                        max({pair1, pair2, middle});
+                    maxPairSum = max({pair1, pair2, middle});
                 }
             }
-
             ans.push_back(activeCount + maxPairSum);
         }
-
         return ans;
     }
 };

@@ -1,111 +1,167 @@
-class Solution {
+class SegmentTree {
 public:
-    void buildSegmentTree(int i, int l, int r, int segmentTree[], int arr[]) {
+    vector<int> tree;
+    int n;
+
+    SegmentTree(vector<int>& arr) {
+        n = arr.size();
+        tree.resize(4 * n);
+        build(1, 0, n - 1, arr);
+    }
+
+    // Merge Function (Range Maximum)
+    int merge(int left, int right) {
+        return max(left, right);
+    }
+
+    void build(int node, int l, int r, vector<int>& arr) {
         if (l == r) {
-            segmentTree[i] = arr[l];
+            tree[node] = arr[l];
             return;
         }
 
-        int mid = l + (r - l) / 2;
-        buildSegmentTree(2 * i + 1, l, mid, segmentTree, arr);
-        buildSegmentTree(2 * i + 2, mid + 1, r, segmentTree, arr);
-        segmentTree[i] = max(segmentTree[2 * i + 1], segmentTree[2 * i + 2]);
+        int mid = (l + r) / 2;
+
+        build(node * 2, l, mid, arr);
+        build(node * 2 + 1, mid + 1, r, arr);
+
+        tree[node] = merge(tree[node * 2], tree[node * 2 + 1]);
     }
 
-    int* constructST(int arr[], int n) {
-        int* segmentTree = new int[4 * n];
-        buildSegmentTree(0, 0, n - 1, segmentTree, arr);
-        return segmentTree;
-    }
+    int query(int node, int l, int r, int ql, int qr) {
 
-    int querySegmentTree(int start, int end, int i, int l, int r, int segmentTree[]) {
-        if (l > end || r < start) {
+        // No Overlap
+        if (r < ql || l > qr)
             return INT_MIN;
-        }
 
-        if (l >= start && r <= end) {
-            return segmentTree[i];
-        }
+        // Complete Overlap
+        if (ql <= l && r <= qr)
+            return tree[node];
 
-        int mid = l + (r - l) / 2;
-        return max(querySegmentTree(start, end, 2 * i + 1, l, mid, segmentTree),
-                querySegmentTree(start, end, 2 * i + 2, mid + 1, r, segmentTree));
+        int mid = (l + r) / 2;
+
+        return merge(
+            query(node * 2, l, mid, ql, qr),
+            query(node * 2 + 1, mid + 1, r, ql, qr)
+        );
     }
 
-    int RMQ(int st[], int n, int a, int b) {
-        return querySegmentTree(a, b, 0, 0, n - 1, st);
+    void update(int node, int l, int r, int idx, int val) {
+
+        if (l == r) {
+            tree[node] = val;
+            return;
+        }
+
+        int mid = (l + r) / 2;
+
+        if (idx <= mid)
+            update(node * 2, l, mid, idx, val);
+        else
+            update(node * 2 + 1, mid + 1, r, idx, val);
+
+        tree[node] = merge(tree[node * 2], tree[node * 2 + 1]);
     }
-    
-    
+
+    // Wrapper Functions
+    int query(int l, int r) {
+        return query(1, 0, n - 1, l, r);
+    }
+
+    void update(int idx, int val) {
+        update(1, 0, n - 1, idx, val);
+    }
+};
+
+class Solution {
+public:
     vector<int> maxActiveSectionsAfterTrade(string s, vector<vector<int>>& queries) {
-        int n = s.length();
-        int activeCount = count(begin(s), end(s), '1');
+
+        int n = s.size();
+        int activeCount = count(s.begin(), s.end(), '1');
 
         vector<int> blockStart;
         vector<int> blockEnd;
 
-
+        // Find all zero blocks
         int i = 0;
-        while(i < n) {
-            if(s[i] == '0') {
+        while (i < n) {
+            if (s[i] == '0') {
                 int start = i;
-                while(i < n && s[i] == '0') i++;
+                while (i < n && s[i] == '0')
+                    i++;
                 blockStart.push_back(start);
-                blockEnd.push_back(i-1);
+                blockEnd.push_back(i - 1);
             } else {
                 i++;
             }
-        }  
+        }
 
         int m = blockStart.size();
 
-        //If there is only one block of zeros
-        //example : s = "11000011" , answer = simply count of 1s "activeCount"
-        if(m < 2) {
+        // Less than two zero blocks
+        if (m < 2) {
             return vector<int>(queries.size(), activeCount);
         }
 
+        // Length of every zero block
         vector<int> blockSize(m);
-        for(int i = 0; i < m; i++) {
+        for (int i = 0; i < m; i++){
             blockSize[i] = blockEnd[i] - blockStart[i] + 1;
         }
 
-        //Pairsum : blockSize[i] = blockSize[i] + blockSize[i+1]
-        int N = blockSize.size()-1; //this many pairs will be there in pairSum
-        //{2, 3, 4, 5, 2}
-        vector<int> pairSum(N);
-        for(int i = 0; i < N; i++) {
-            pairSum[i] = blockSize[i] + blockSize[i+1];
+        // pairSum[i] = blockSize[i] + blockSize[i+1]
+        vector<int> pairSum;
+        for (int i = 0; i + 1 < m; i++){
+            pairSum.push_back(blockSize[i] + blockSize[i + 1]);
         }
 
-        int *st = constructST(pairSum.data(), N);
+        SegmentTree sy(pairSum);
 
-        vector<int> result;
-        for(auto &q : queries) { //O(q*log)
+        vector<int> ans;
+
+        for (auto &q : queries) {
+
             int l = q[0];
             int r = q[1];
 
-            //first block in this range
-            int low  = lower_bound(begin(blockEnd), end(blockEnd), l) - begin(blockEnd); //log
-            int high = upper_bound(begin(blockStart), end(blockStart), r) - begin(blockStart) - 1; //log
+            int low = lower_bound(blockEnd.begin(), blockEnd.end(), l) - blockEnd.begin();
+
+            int high = upper_bound(blockStart.begin(), blockStart.end(), r) - blockStart.begin() - 1;
 
             int maxPairSum = 0;
-            if(low < high) { //we need atleast two blocks
-                int firstLen = blockEnd[low] - max(blockStart[low], l) + 1; 
-                int lastLen  = min(blockEnd[high], r) - blockStart[high] + 1;
 
-                if(high - low == 1) { //exactly two blocks are there only
+            if (low < high) {
+
+                int firstLen =
+                    blockEnd[low] - max(blockStart[low], l) + 1;
+
+                int lastLen =
+                    min(blockEnd[high], r) - blockStart[high] + 1;
+
+                if (high - low == 1) {
+
                     maxPairSum = firstLen + lastLen;
+
                 } else {
-                    int pair1 = firstLen + blockSize[low+1];
-                    int pair2 = blockSize[high-1] + lastLen;
-                    int RMQMaxPairSum = RMQ(st, N, low+1, high-2); //log
-                    maxPairSum = max({pair1, pair2, RMQMaxPairSum});
+
+                    int pair1 =
+                        firstLen + blockSize[low + 1];
+
+                    int pair2 =
+                        blockSize[high - 1] + lastLen;
+
+                    int middle =
+                        sy.query(low + 1, high - 2);
+
+                    maxPairSum =
+                        max({pair1, pair2, middle});
                 }
             }
-            result.push_back(maxPairSum + activeCount);
+
+            ans.push_back(activeCount + maxPairSum);
         }
 
-        return result;
+        return ans;
     }
 };

@@ -17,19 +17,18 @@ public:
             if(indegree[i]==0)q.push(i);
         }
 
-        vector<int>ans;
+        int ans = 0;
 
         while(!q.empty()){
             int u = q.front();
             q.pop();
-            ans.push_back(u);
+            ans++;
 
             for(auto it:adj[u]){
                 indegree[it]--;
                 if(indegree[it]==0)q.push(it);
             }
         }
-        if(ans.size()==n)return true;
-        return false;
+        return (ans==n);
     }
 };

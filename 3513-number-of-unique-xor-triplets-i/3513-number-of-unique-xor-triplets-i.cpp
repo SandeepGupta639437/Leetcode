@@ -10,7 +10,7 @@ public:
         // let the max number is 7 .. and 7 is 3 bit number .. so we can generfate all 3 bit number including 0 till y7 ..i.e: cnt = 8;
         int p = 1;
         while (p <= n)
-            p *= 2;     // It gives the number of
+            p <<= 1;     // It gives the number of that it pow of 2 and is greater that n for that bit  ( Ex : for 4 ..it gives 8 .. 4->3bit,  8-> 4bit)
 
         return p;
     }

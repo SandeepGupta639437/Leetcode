@@ -19,57 +19,22 @@ public:
             tree[node] = arr[l];
             return;
         }
-
         int mid = (l + r) / 2;
-
         build(node * 2, l, mid, arr);
         build(node * 2 + 1, mid + 1, r, arr);
-
         tree[node] = merge(tree[node * 2], tree[node * 2 + 1]);
     }
-
     int query(int node, int l, int r, int ql, int qr) {
-
         // No Overlap
-        if (r < ql || l > qr)
-            return INT_MIN;
-
+        if (r < ql || l > qr) return INT_MIN;
         // Complete Overlap
-        if (ql <= l && r <= qr)
-            return tree[node];
-
+        if (ql <= l && r <= qr) return tree[node];
         int mid = (l + r) / 2;
-
-        return merge(
-            query(node * 2, l, mid, ql, qr),
-            query(node * 2 + 1, mid + 1, r, ql, qr)
-        );
+        return merge( query(node * 2, l, mid, ql, qr), query(node * 2 + 1, mid + 1, r, ql, qr));
     }
 
-    void update(int node, int l, int r, int idx, int val) {
-
-        if (l == r) {
-            tree[node] = val;
-            return;
-        }
-
-        int mid = (l + r) / 2;
-
-        if (idx <= mid)
-            update(node * 2, l, mid, idx, val);
-        else
-            update(node * 2 + 1, mid + 1, r, idx, val);
-
-        tree[node] = merge(tree[node * 2], tree[node * 2 + 1]);
-    }
-
-    // Wrapper Functions
     int query(int l, int r) {
         return query(1, 0, n - 1, l, r);
-    }
-
-    void update(int idx, int val) {
-        update(1, 0, n - 1, idx, val);
     }
 };
 
@@ -117,7 +82,6 @@ public:
         }
 
         SegmentTree sy(pairSum);
-
         vector<int> ans;
 
         for (auto &q : queries) {
@@ -126,15 +90,12 @@ public:
             int r = q[1];
 
             int low = lower_bound(blockEnd.begin(), blockEnd.end(), l) - blockEnd.begin();
-
             int high = upper_bound(blockStart.begin(), blockStart.end(), r) - blockStart.begin() - 1;
-
             int maxPairSum = 0;
 
             if (low < high) {
 
                 int firstLen = blockEnd[low] - max(blockStart[low], l) + 1;
-
                 int lastLen = min(blockEnd[high], r) - blockStart[high] + 1;
 
                 if (high - low == 1) {
@@ -142,9 +103,7 @@ public:
 
                 } else {
                     int pair1 = firstLen + blockSize[low + 1];
-
                     int pair2 = blockSize[high - 1] + lastLen;
-
                     int middle = sy.query(low + 1, high - 2);
 
                     maxPairSum = max({pair1, pair2, middle});

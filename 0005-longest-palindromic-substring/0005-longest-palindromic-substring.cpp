@@ -5,7 +5,7 @@ public:
     int idx = 0,idy=0;
 
     bool check(string& s,int i,int j){
-        if(i>=j)return 1;
+        if(i>=j)return dp[i][j] = 1;
 
         if(dp[i][j]!=-1)return dp[i][j];
 

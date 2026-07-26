@@ -16,9 +16,10 @@ public:
     }
     bool canReach(string s, int minJump, int maxJump) {
         int n = s.size();
+        // memset(dp,-1,sizeof(dp));
         memset(dp,0,sizeof(dp));
-        // vector<int> prefix(n + 1, 0);
-        // prefix[n-1] = true;
+        vector<int> prefix(n + 1, 0);
+        prefix[n-1] = true;
         
         dp[0] = 1;
         int count =0;
@@ -34,6 +35,7 @@ public:
             }
         }
         return dp[n-1]>0;
+        
         // return solve (0,s,minJump,maxJump);
     }
 };

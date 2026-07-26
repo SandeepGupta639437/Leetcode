@@ -1,58 +1,43 @@
-//Approach-3 (Bottom Up + Prefix Sum) - TLE
-//T.C : O(n*m)
-//S.C : O(n*m)
 class Solution {
 public:
-    int MOD = 1e9+7;
-    typedef long long ll;
-
-    
+    static const int MOD = 1e9 + 7;
 
     int zigZagArrays(int n, int l, int r) {
-        int N = n;
-        int M = r-l+1;
 
-        ll t[2001][2001][2];
+        int M = r - l + 1;
 
-        //Base Case
-        for(int prevVal = 1; prevVal <= M; prevVal++) {
-            t[N][prevVal][0] = 1;
-            t[N][prevVal][1] = 1;
+        int dp[2001][2002][2];
+        memset(dp, 0, sizeof(dp));
+
+        // Base case
+        for (int val = 1; val <= M; val++) {
+            dp[n - 1][val][0] = 1;
+            dp[n - 1][val][1] = 1;
         }
 
-        for(int i = N-1; i >= 0; i--) {
+        // DP
+        for (int i = n - 2; i >= 0; i--) {
 
-            vector<ll> prefDir0(M+1, 0);
-            vector<ll> prefDir1(M+1, 0);
+            vector<long long> cumSum0(M + 1, 0);
+            vector<long long> cumSum1(M + 1, 0);
 
-            for(int prevVal = 1; prevVal <= M; prevVal++) {
-                
-                prefDir0[prevVal] = (prefDir0[prevVal-1] + t[i+1][prevVal][0]) % MOD;
-
-                prefDir1[prevVal] = (prefDir1[prevVal-1] + t[i+1][prevVal][1]) % MOD;
-
+            for (int val = 1; val <= M; val++) {
+                cumSum0[val] = (cumSum0[val - 1] + dp[i + 1][val][0]) % MOD;
+                cumSum1[val] = (cumSum1[val - 1] + dp[i + 1][val][1]) % MOD;
             }
 
-            for(int prevVal = 1; prevVal <= M; prevVal++) {
-                
-                t[i][prevVal][1] = (prefDir0[M] - prefDir0[prevVal] + MOD) % MOD;
-
-                t[i][prevVal][0] = prefDir1[prevVal-1];
-
+            for (int val = 1; val <= M; val++) {
+                dp[i][val][1] = (cumSum0[M] - cumSum0[val] + MOD) % MOD;
+                dp[i][val][0] = cumSum1[val - 1];
             }
         }
 
-        ll result = 0;
-
-        for(int startVal = 1; startVal <= M; startVal++) {
-            //a < b > c < d ...
-            result = (result + t[1][startVal][1]) % MOD;
-
-            //a > b < c > d...
-            result = (result + t[1][startVal][0]) % MOD;
+        long long ans = 0;
+        for (int val = 1; val <= M; val++) {
+            ans = (ans + dp[0][val][0]) % MOD;
+            ans = (ans + dp[0][val][1]) % MOD;
         }
 
-        return result;
-        
+        return ans;
     }
 };

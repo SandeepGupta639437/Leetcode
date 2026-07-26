@@ -30,22 +30,18 @@ public:
     Matrix power(Matrix base, long long exp) {
         int n = base.size();
 
-        Matrix result(n, vector<ll>(n, 0));
-
-        for(int i = 0; i < n; i++)
-            result[i][i] = 1;
-
-        while(exp) {
-
-            if(exp & 1)
-                result = multiply(result, base);
-
-            base = multiply(base, base);
-
-            exp >>= 1;
+        // Identity Matrix
+        if (exp == 0) {
+            Matrix identity(n, vector<ll>(n, 0));
+            for (int i = 0; i < n; i++)
+                identity[i][i] = 1;
+            return identity;
         }
 
-        return result;
+        if (exp & 1)
+            return multiply(base, power(multiply(base, base), exp >> 1));
+
+        return power(multiply(base, base), exp >> 1);
     }
 
     vector<ll> multiplyMatVec( const Matrix& A , const vector<ll>& v ) {

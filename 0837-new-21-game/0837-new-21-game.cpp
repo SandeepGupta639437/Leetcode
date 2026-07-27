@@ -9,7 +9,7 @@ public:
         for(int i=1;i<=n;i++){
             dp[i] = currProbabSum / maxPts;
             if(i<k) currProbabSum += dp[i];
-            if(i-maxPts>=0 && i-maxPts<k){
+            if(i>=maxPts && i-maxPts<k){
                 currProbabSum -= dp[i-maxPts];
             }
         }

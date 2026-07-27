@@ -50,53 +50,38 @@ public:
 class Solution {
 public:
 
-    int zigZagArrays(long long n, int l, int r) {
+    int zigZagArrays(long long n,int l,int r){
 
         MatrixExpo mt;
-        int M = r - l + 1;
-        if(n == 1) return M;
 
-        int SZ = 2 * M;
+        int M=r-l+1;
 
-        Matrix T(SZ, vector<ll>(SZ, 0));
+        int SZ=2*M;
 
-        // U(j) = sum_{k<j} D(k)
-        for(int j = 1; j <= M; j++) {
-            for(int k = 1; k < j; k++) {
-                T[j - 1][M + (k - 1)] = 1;
-            }
-        }
+        Matrix T(SZ,vector<ll>(SZ,0));
 
-        // D(j) = sum_{k>j} U(k)
-        for(int j = 1; j <= M; j++) {
-            for(int k = j + 1; k <= M; k++) {
-                T[M + (j - 1)][k - 1] = 1;
-            }
-        }
+        // dp[][val][0] = sum(dp[][k][1]), k<val
+        for(int val=1;val<=M;val++)
+            for(int k=1;k<val;k++)
+                T[val-1][M+k-1]=1;
 
-        /*
-            Base layer:
-            length = 2
+        // dp[][val][1] = sum(dp[][k][0]), k>val
+        for(int val=1;val<=M;val++)
+            for(int k=val+1;k<=M;k++)
+                T[M+val-1][k-1]=1;
 
-            U(j) = count(k < j) = j-1
-            D(j) = count(k > j) = M-j
-        */
+        // Base layer (i = n-1)
+        vector<ll> base(SZ,1);
 
-        vector<ll> base(SZ, 0);
+        Matrix P=mt.Power(T,n-1);
 
-        for(int j = 1; j <= M; j++) {
-            base[j - 1] = j - 1;
-            base[M + j - 1] = M - j;
-        }
+        vector<ll> state=mt.multiplyMatVec(P,base);
 
-        Matrix P = mt.Power(T, n - 2);
+        ll ans=0;
 
-        vector<ll> finalState = mt.multiplyMatVec(P, base);
+        for(ll x:state)
+            ans=(ans+x)%MOD;
 
-        ll ans = 0;
-
-        for(ll x : finalState) ans = (ans + x) % MOD;
-
-        return (int)ans;
+        return ans;
     }
 };

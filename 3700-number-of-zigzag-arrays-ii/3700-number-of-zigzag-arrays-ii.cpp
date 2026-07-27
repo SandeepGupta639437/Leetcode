@@ -1,72 +1,60 @@
+using ll = long long;
+const ll MOD = 1e9+7;
+using Matrix =  vector<vector<ll>>;
+
+class MatrixExpo{
+public:
+
+  Matrix Multiply(const Matrix& A, const Matrix& B){
+    int n = A.size();
+
+    Matrix C(n,vector<ll>(n,0));
+
+    for(int i=0;i<n;i++){
+      for(int k=0;k<n;k++){
+        if(A[i][k]==0)continue;
+        for(int j=0;j<n;j++){
+          if(B[k][j]==0)continue;
+          C[i][j] = (C[i][j] + A[i][k] * B[k][j])%MOD;
+        }
+      }
+    }
+    return C;
+  }
+
+  Matrix Identity(int n){
+    Matrix I(n,vector<ll>(n,0));
+    for(int i=0;i<n;i++)I[i][i] = 1;
+    return I;
+  }
+
+  Matrix Power(const Matrix& A, ll b) {
+    if (b == 0) return Identity(A.size());
+    if (b & 1) return Multiply(A, Power(Multiply(A, A), b >> 1));
+    return Power(Multiply(A, A), b >> 1);
+  }
+
+  vector<ll> multiplyMatVec(const Matrix& A, const vector<ll>& v) {
+    int n = A.size();
+    vector<ll> result(n, 0);
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        result[i] = (result[i] + A[i][j] * v[j]) % MOD;
+      }
+    }
+    return result;
+  }
+};
+
+
 class Solution {
 public:
-    using ll = long long;
-    const ll MOD = 1e9 + 7;
-
-    using Matrix = vector<vector<ll>>;
-
-    Matrix multiply(const Matrix& A, const Matrix& B) {
-        int n = A.size();
-
-        Matrix C(n, vector<ll>(n, 0));
-
-        for(int i = 0; i < n; i++) {
-            for(int k = 0; k < n; k++) {
-
-                if(A[i][k] == 0) continue;
-
-                for(int j = 0; j < n; j++) {
-
-                    if(B[k][j] == 0) continue;
-
-                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
-                }
-            }
-        }
-
-        return C;
-    }
-
-    Matrix power(Matrix base, long long exp) {
-        int n = base.size();
-
-        // Identity Matrix
-        if (exp == 0) {
-            Matrix identity(n, vector<ll>(n, 0));
-            for (int i = 0; i < n; i++)
-                identity[i][i] = 1;
-            return identity;
-        }
-
-        if (exp & 1)
-            return multiply(base, power(multiply(base, base), exp >> 1));
-
-        return power(multiply(base, base), exp >> 1);
-    }
-
-    vector<ll> multiplyMatVec( const Matrix& A , const vector<ll>& v ) {
-        int n = A.size();
-
-        vector<ll> res(n, 0);
-
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++) {
-
-                if(A[i][j] == 0) continue;
-
-                res[i] = (res[i] + A[i][j] * v[j]) % MOD;
-            }
-        }
-
-        return res;
-    }
 
     int zigZagArrays(long long n, int l, int r) {
 
+        MatrixExpo mt;
         int M = r - l + 1;
-
-        if(n == 1)
-            return M;
+        if(n == 1) return M;
 
         int SZ = 2 * M;
 
@@ -101,15 +89,13 @@ public:
             base[M + j - 1] = M - j;
         }
 
-        Matrix P = power(T, n - 2);
+        Matrix P = mt.Power(T, n - 2);
 
-        vector<ll> finalState =
-            multiplyMatVec(P, base);
+        vector<ll> finalState = mt.multiplyMatVec(P, base);
 
         ll ans = 0;
 
-        for(ll x : finalState)
-            ans = (ans + x) % MOD;
+        for(ll x : finalState) ans = (ans + x) % MOD;
 
         return (int)ans;
     }

@@ -12,6 +12,7 @@ public:
             if(p[j]=='*')return dp[i][j]=solve(s,p,i,j+1);
             return false;
         }
+        
         if(p[j]=='?' || (s[i]==p[j]))return dp[i][j]= solve(s,p,i+1,j+1);
         else if(p[j]=='*'){
             return dp[i][j]= (solve(s,p,i+1,j)||solve(s,p,i,j+1));

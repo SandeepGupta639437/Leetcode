@@ -7,16 +7,16 @@ public:
         int i= 1;
         while(i<M){
             if(pattern[i] == pattern[len]){
-            len++;
-            LPS[i] = len;
-            i++;
-            }else{
-            if(len!=0){
-                len = LPS[len-1];
-            }else{
-                LPS[i] = 0;
+                len++;
+                LPS[i] = len;
                 i++;
-            }
+            }else{
+                if(len!=0){
+                    len = LPS[len-1];
+                }else{
+                    LPS[i] = 0;
+                    i++;
+                }
             }
         }
     }

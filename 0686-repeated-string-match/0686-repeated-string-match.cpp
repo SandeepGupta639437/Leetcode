@@ -19,10 +19,9 @@ public:
             return ans;
 
         a += original;
-        ans = ans+1;
 
         if(a.find(b) != string::npos)
-            return ans;
+            return ans + 1;
 
         return -1;
     }

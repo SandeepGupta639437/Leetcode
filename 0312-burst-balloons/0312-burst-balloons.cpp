@@ -22,6 +22,6 @@ public:
         nums.push_back(1);
         memset(dp,-1,sizeof(dp));
 
-        return solve(1, nums.size() - 2, nums);
+        return solve(1, nums.size() - 2, nums); // 1-> index of first element previously // nums.size()-2 is the index of last elemnt previously
     }
 };

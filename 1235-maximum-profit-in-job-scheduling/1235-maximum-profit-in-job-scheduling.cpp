@@ -9,7 +9,7 @@ public:
 
          auto it = lower_bound( v.begin() + i + 1, v.end(),
             v[i][1],                // current end time
-            [](const vector<int>& job, int endTime) {
+            [&](const vector<int>& job, int endTime) {
                 return job[0] < endTime;
             }
         );

@@ -31,7 +31,7 @@ public:
             v[i][1] = endTime[i];
             v[i][2] = profit[i];
         }
-        sort(begin(v),end(v),[&](const auto a,const auto b){
+        sort(begin(v),end(v),[&](const auto& a,const auto& b){
             return a[0]<b[0];
         });
 

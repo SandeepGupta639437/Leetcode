@@ -1,7 +1,7 @@
 class Solution {
 public:
     int n;
-    int dp[50001];
+    int dp[500001];
     int solve(int i,vector<vector<int>>& v){
         if(i>=n)return 0;
 

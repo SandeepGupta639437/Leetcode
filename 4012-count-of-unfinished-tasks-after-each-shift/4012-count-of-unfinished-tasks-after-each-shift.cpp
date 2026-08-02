@@ -5,8 +5,9 @@ public:
 
         vector<long long> pref(n);
         pref[0] = tasks[0];
-        for (int i = 1; i < n; i++)
-            pref[i] = pref[i - 1] + tasks[i];
+        for (int i = 1; i < n; i++){
+             pref[i] = pref[i - 1] + tasks[i];
+        }
 
         vector<int> ans;
 
@@ -27,12 +28,12 @@ public:
             j++;
 
             // Finished everything
-            if (j == n) {
-                ans.push_back(0);
-                j = 0;
-                left = tasks[0];
-                continue;
-            }
+            // if (j == n) {
+            //     ans.push_back(0);
+            //     j = 0;
+            //     left = tasks[0];
+            //     continue;
+            // }
 
             // Binary search from task j
             long long before = pref[j - 1];

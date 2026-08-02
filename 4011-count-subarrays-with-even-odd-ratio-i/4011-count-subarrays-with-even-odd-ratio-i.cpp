@@ -1,46 +1,71 @@
-class Solution {
+class Fenwick {
 public:
     int n;
-    vector<int>evenPref;
-    vector<int>oddPref;
-    double a,b;
-    double rat2;
+    vector<int> bit;
 
-    bool valid(int l,int r,vector<int>& nums){
-        double x = evenPref[r] - ((l==0)?0:evenPref[l-1]);
-        double y = oddPref[r] - ((l==0)?0:oddPref[l-1]);
-        if (y == 0) return false;
-        return (x*b<=y*a);
+    Fenwick(int n) {
+        this->n = n;
+        bit.assign(n + 1, 0);
     }
 
+    void update(int idx, int val) {
+        while (idx <= n) {
+            bit[idx] += val;
+            idx += idx & (-idx);
+        }
+    }
 
-    int countRatioSubarrays(vector<int>& nums, int A, int B) {
-        n = nums.size();
-        a=A;b=B;
-        rat2 = a/b;
-        evenPref.resize(n);
-        oddPref.resize(n);
-        if(nums[0]%2){
-            evenPref[0] =0;
-            oddPref[0] = 1;
-        }else{
-            evenPref[0] = 1;
-            oddPref[0] = 0;
+    int query(int idx) {
+        int sum = 0;
+        while (idx > 0) {
+            sum += bit[idx];
+            idx -= idx & (-idx);
+        }
+        return sum;
+    }
+};
+
+class Solution {
+public:
+    long long countRatioSubarrays(vector<int>& nums, int A, int B) {
+
+        int n = nums.size();
+
+        vector<long long> pref;
+
+        int even = 0, odd = 0;
+
+        // F(-1)
+        pref.push_back(0);
+
+        for (int x : nums) {
+            if (x & 1)
+                odd++;
+            else
+                even++;
+
+            pref.push_back(1LL * B * even - 1LL * A * odd);
         }
 
-        for(int i=1;i<n;i++){
-            evenPref[i] +=evenPref[i-1] + ((nums[i]%2)?0:1);
-            oddPref[i] += oddPref[i-1] + ((nums[i]%2)?1:0);
+        // Coordinate Compression
+        vector<long long> vals = pref;
+        sort(vals.begin(), vals.end());
+        vals.erase(unique(vals.begin(), vals.end()), vals.end());
+
+        Fenwick bit(vals.size());
+
+        long long ans = 0;
+
+        for (long long x : pref) {
+
+            int idx = lower_bound(vals.begin(), vals.end(), x) - vals.begin() + 1;
+
+            // previous prefixes >= current
+            ans += bit.query(vals.size()) - bit.query(idx - 1);
+
+            bit.update(idx, 1);
         }
 
-        int ans  =  0;
-
-        for (int l = 0; l < n; l++) {
-            for (int r = l; r < n; r++) {
-                if (valid(l, r, nums))
-                    ans++;
-            }
-        }
         return ans;
     }
 };

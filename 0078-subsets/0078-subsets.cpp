@@ -1,20 +1,20 @@
 class Solution {
 public:
-    vector<vector<int>> ans;
+    set<vector<int>> st;
     int n;
 
-    void solve(int i, vector<int>& nums, vector<int>& temp) {
+    void solve(int i, vector<int>& arr, vector<int>& temp) {
         if (i == n) {
-            ans.push_back(temp);
+            st.insert(temp);
             return;
         }
 
-        // Not take
-        solve(i + 1, nums, temp);
+        // Don't take arr[i]
+        solve(i + 1, arr, temp);
 
-        // Take
-        temp.push_back(nums[i]);
-        solve(i + 1, nums, temp);
+        // Take arr[i]
+        temp.push_back(arr[i]);
+        solve(i + 1, arr, temp);
         temp.pop_back();
     }
 
@@ -22,6 +22,7 @@ public:
         n = nums.size();
         vector<int> temp;
         solve(0, nums, temp);
-        return ans;
+
+        return vector<vector<int>>(st.begin(), st.end());
     }
 };

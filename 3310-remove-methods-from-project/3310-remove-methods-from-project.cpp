@@ -1,32 +1,41 @@
 class Solution {
 public:
-    vector<int>ans;
-    vector<bool>visited;
-    void dfs(int node,vector<vector<int>>& nums){
-        visited[node] = true;
-        for(auto it:nums[node]){
-           if(!visited[it]) dfs(it,nums);
+    vector<bool> vis;
+
+    void dfs(int u, const vector<vector<int>>& graph) {
+        vis[u] = true;
+        for (int v : graph[u]) {
+            if (!vis[v])
+                dfs(v, graph);
         }
     }
+
     vector<int> remainingMethods(int n, int k, vector<vector<int>>& invocations) {
-        vector<vector<int>> nums(n);
-        visited.resize(n,false);
-        for(auto it : invocations){
-            nums[it[0]].push_back(it[1]);
-        }
-        dfs(k,nums);
-        
-        for(auto it : invocations){
-            if(!visited[it[0]] && visited[it[1]]){
-                for(int i=0;i<n;i++)ans.push_back(i);
+        vector<vector<int>> graph(n);
+        for (auto &e : invocations)
+            graph[e[0]].push_back(e[1]);
+
+        vis.assign(n, false);
+        dfs(k, graph);
+
+        // If an outside method invokes a suspicious method,
+        // nothing can be removed.
+        for (auto &e : invocations) {
+            if (!vis[e[0]] && vis[e[1]]) {
+                vector<int> ans(n);
+                iota(ans.begin(), ans.end(), 0);
                 return ans;
             }
         }
 
-        for(int i=0;i<n;i++){
-            if(!visited[i])ans.push_back(i);
-        }
-        return ans;
+        vector<int> ans;
+        ans.reserve(n);
 
+        for (int i = 0; i < n; i++) {
+            if (!vis[i])
+                ans.push_back(i);
+        }
+
+        return ans;
     }
 };

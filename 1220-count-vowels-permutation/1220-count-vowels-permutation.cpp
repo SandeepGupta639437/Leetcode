@@ -73,47 +73,43 @@ public:
     using ll = long long;
     const ll MOD = 1e9 + 7;
 
-    using Matrix = vector<vector<ll>>;
+    ll dp[20001][5];
 
-    int dp[20001][5];
+    ll solve(int n, int ch) {
+        if(n == 0)
+            return 1;
 
-    map<char, int> mp = {
-        {'a', 0},
-        {'e', 1},
-        {'i', 2},
-        {'o', 3},
-        {'u', 4}
-    };
+        if(dp[n][ch] != -1)
+            return dp[n][ch];
 
-    ll solve(int n,char ch){
-        if(n==0)return 1;
-        if(n<0)return 0;
-        ll ans =0;
+        ll ans = 0;
 
-        if(dp[n][mp[ch]]!=-1)return dp[n][mp[ch]];
-
-        if(ch=='a'){
-        ans = (ans+solve(n-1,'e'))%MOD;
-        }
-        if(ch == 'e'){
-            ans = (ans+solve(n-1,'a'))%MOD;
-            ans = (ans+solve(n-1,'i'))%MOD;
-        }
-        if(ch == 'i'){
-            ans = (ans+solve(n-1,'a'))%MOD;
-            ans = (ans+solve(n-1,'e'))%MOD;
-            ans = (ans+solve(n-1,'o'))%MOD;
-            ans = (ans+solve(n-1,'u'))%MOD;
-        }
-        if(ch == 'o'){
-            ans = (ans+solve(n-1,'u'))%MOD;
-            ans = (ans+solve(n-1,'i'))%MOD;
-        }
-        if(ch == 'u'){
-            ans = (ans+solve(n-1,'a'))%MOD;
+        if(ch == 0) {              // a -> e
+            ans = solve(n-1, 1);
         }
 
-        return dp[n][mp[ch]] = ans;
+        else if(ch == 1) {         // e -> a, i
+            ans = (solve(n-1, 0) +
+                   solve(n-1, 2)) % MOD;
+        }
+
+        else if(ch == 2) {         // i -> a,e,o,u
+            ans = (solve(n-1, 0) +
+                   solve(n-1, 1) +
+                   solve(n-1, 3) +
+                   solve(n-1, 4)) % MOD;
+        }
+
+        else if(ch == 3) {         // o -> i,u
+            ans = (solve(n-1, 2) +
+                   solve(n-1, 4)) % MOD;
+        }
+
+        else {                     // u -> a
+            ans = solve(n-1, 0);
+        }
+
+        return dp[n][ch] = ans;
     }
 
     int countVowelPermutation(int n) {
@@ -140,12 +136,12 @@ public:
 
         // return total;
         memset(dp,-1,sizeof(dp));
-        ll result = 0;
-        result = (result+ solve(n-1,'a'))%MOD;
-        result = (result+ solve(n-1,'e'))%MOD;
-        result = (result+ solve(n-1,'i'))%MOD;
-        result = (result+ solve(n-1,'o'))%MOD;
-        result = (result+ solve(n-1,'u'))%MOD;
-        return result;
+        ll ans = 0;
+
+        for(int i = 0; i < 5; i++) {
+            ans = (ans + solve(n-1, i)) % MOD;
+        }
+
+        return ans;
     }
 };

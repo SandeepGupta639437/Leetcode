@@ -76,36 +76,22 @@ public:
     ll dp[20001][5];
 
     ll solve(int n, int ch) {
-        if(n == 0)
-            return 1;
+        if(n == 0) return 1;
 
-        if(dp[n][ch] != -1)
-            return dp[n][ch];
+        if(dp[n][ch] != -1) return dp[n][ch];
 
         ll ans = 0;
 
         if(ch == 0) {              // a -> e
             ans = solve(n-1, 1);
-        }
-
-        else if(ch == 1) {         // e -> a, i
+        }else if(ch == 1) {         // e -> a, i
             ans = (solve(n-1, 0) +
                    solve(n-1, 2)) % MOD;
-        }
-
-        else if(ch == 2) {         // i -> a,e,o,u
-            ans = (solve(n-1, 0) +
-                   solve(n-1, 1) +
-                   solve(n-1, 3) +
-                   solve(n-1, 4)) % MOD;
-        }
-
-        else if(ch == 3) {         // o -> i,u
-            ans = (solve(n-1, 2) +
-                   solve(n-1, 4)) % MOD;
-        }
-
-        else {                     // u -> a
+        }else if(ch == 2) {         // i -> a,e,o,u
+            ans = (solve(n-1, 0) + solve(n-1, 1) + solve(n-1, 3) + solve(n-1, 4)) % MOD;
+        }else if(ch == 3) {         // o -> i,u
+            ans = (solve(n-1, 2) +solve(n-1, 4)) % MOD;
+        }else {                     // u -> a
             ans = solve(n-1, 0);
         }
 

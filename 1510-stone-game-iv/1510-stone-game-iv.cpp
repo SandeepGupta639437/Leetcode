@@ -16,6 +16,9 @@ public:
 
     bool winnerSquareGame(int n) {
         memset(dp, -1, sizeof(dp));
-        return solve(n);
+        for(int i = 1; i * i <= n; i++) {
+            if(!solve(n - i * i))  return dp[n] = true;
+        }
+        return false;
     }
 };

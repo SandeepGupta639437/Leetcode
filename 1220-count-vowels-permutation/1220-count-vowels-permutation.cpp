@@ -72,6 +72,7 @@ class Solution {
 public:
     using ll = long long;
     const ll MOD = 1e9 + 7;
+    using Matrix = vector<vector<ll>>;
 
     ll dp[20001][5];
 
@@ -100,34 +101,34 @@ public:
 
     int countVowelPermutation(int n) {
 
-        // Matrix T = {
-        //     {0, 1, 1, 0, 1},
-        //     {1, 0, 1, 0, 0},
-        //     {0, 1, 0, 1, 0},
-        //     {0, 0, 1, 0, 0},
-        //     {0, 0, 1, 1, 0}
-        // };
+        Matrix T = {
+            {0, 1, 1, 0, 1},
+            {1, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 1, 1, 0}
+        };
 
-        // MatrixExpo matrixExpo;
+        MatrixExpo matrixExpo;
 
-        // Matrix result = matrixExpo.Power(T, n - 1);
+        Matrix result = matrixExpo.Power(T, n - 1);
 
-        // vector<ll> ans = matrixExpo.multiplyMatVec( result,{1, 1, 1, 1, 1} );
+        vector<ll> ans = matrixExpo.multiplyMatVec( result,{1, 1, 1, 1, 1} );
 
-        // ll total = 0;
-
-        // for(int i = 0; i < 5; i++) {
-        //     total = (total + ans[i]) % MOD;
-        // }
-
-        // return total;
-        memset(dp,-1,sizeof(dp));
-        ll ans = 0;
+        ll total = 0;
 
         for(int i = 0; i < 5; i++) {
-            ans = (ans + solve(n-1, i)) % MOD;
+            total = (total + ans[i]) % MOD;
         }
 
-        return ans;
+        return total;
+        // memset(dp,-1,sizeof(dp));
+        // ll ans = 0;
+
+        // for(int i = 0; i < 5; i++) {
+        //     ans = (ans + solve(n-1, i)) % MOD;
+        // }
+
+        // return ans;
     }
 };

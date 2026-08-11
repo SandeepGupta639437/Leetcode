@@ -5,17 +5,18 @@ public:
         int n = matrix.size();
         int m =matrix[0].size();
         prefix.resize(n, vector<int>(m));
+
         prefix[0][0] = matrix[0][0];
 
         for(int j=1;j<m;j++){
             prefix[0][j] = prefix[0][j-1] + matrix[0][j];
         }
-        for(int i = 1; i < n; i++) {
+        for(int i=1;i<n;i++){
             prefix[i][0] = prefix[i-1][0] + matrix[i][0];
         }
 
-        for(int i = 1; i < n; i++) {
-            for(int j = 1; j < m; j++) {
+        for(int i=1;i<n;i++){
+            for(int j=1;j<m;j++){
                 prefix[i][j] = matrix[i][j] + prefix[i-1][j] + prefix[i][j-1] - prefix[i-1][j-1];
             }
         }

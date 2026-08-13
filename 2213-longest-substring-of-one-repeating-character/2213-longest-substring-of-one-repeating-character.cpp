@@ -14,15 +14,15 @@ public:
     Node merge(const Node& L, const Node& R, int leftLen, int rightLen) {
         Node res;
 
-        res.leftChar  = L.leftChar;
-        res.rightChar = R.rightChar;
+        res.leftChar  = L.leftChar; // left waale ka leftmost character hi parent ka leftmost character hoga
+        res.rightChar = R.rightChar; // right ka rightmost character hi parent ka rightmost character hoga
 
-        res.pre = L.pre;
-        if (L.pre == leftLen && L.rightChar == R.leftChar) {
+        res.pre = L.pre;             //  result ka prefix count left waale ke prefix count ke brabr hoga
+        if (L.pre == leftLen && L.rightChar == R.leftChar) {  // agr "aaaa" aur "aabcd" ko merge krenge to aaaaaabcd hoga ..jiska prefix 6 ho jayega
             res.pre = L.pre + R.pre;
         }
 
-        res.suf = R.suf;
+        res.suf = R.suf;            //  result ka prefix count right waale ke prefix count ke brabr hoga
         if (R.suf == rightLen && L.rightChar == R.leftChar) {
             res.suf = R.suf + L.suf;
         }
@@ -50,7 +50,7 @@ public:
         if (l == r) { //l == r == pos
             segTree[i] = { 1, 1, 1, ch, ch };
             return;
-        }
+        } 
         int mid = l + (r - l) / 2;
         if (pos <= mid) {
             update(2 * i + 1, l, mid, pos, ch);

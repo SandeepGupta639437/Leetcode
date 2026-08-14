@@ -7,12 +7,11 @@ BEGIN
         DENSE_RANK() OVER (ORDER BY salary desc) as rnk
         from Employee
     ) 
-    SELECT  (
+    
         SELECT getNthHighestSalary
         from ranked
         where rnk = N
         LIMIT 1
-    )
 
   );
 END

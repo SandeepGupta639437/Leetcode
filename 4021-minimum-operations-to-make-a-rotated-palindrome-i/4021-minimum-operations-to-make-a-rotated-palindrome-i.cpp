@@ -1,34 +1,27 @@
 class Solution {
 public:
-    int solve(string &s){
-        int i = 0, j = s.size()-1;
-        int cnt = 0;
-        while(i<j){
-            int x = (s[j]-s[i]+26)%26;
-            int y = (s[i]-s[j]+26)%26;
-            cnt += min(x,y);
-            i++;
-            j--;
-        }
-        return cnt;
-    }
     int minOperations(string s) {
-        int n = s.length();
+        int n = s.size();
         s += s;
-        vector<string>v(n);
-        for(int i=0;i<n;i++){
-            for(int j=i;j<i+n;j++){
-                v[i].push_back(s[j]);
-            }
-        }
 
         int ans = INT_MAX;
 
-        for(int i=0;i<n;i++){
-            string temp = v[i];
-            int op = i + solve(temp);
-            ans = min(ans,op);
+        for(int start = 0; start < n; start++) {
+            int cost = start;
+
+            for(int j = 0; j < n / 2; j++) {
+                char a = s[start + j];
+                char b = s[start + n - 1 - j];
+
+                int x = (a - b + 26) % 26;
+                int y = (b - a + 26) % 26;
+
+                cost += min(x, y);
+            }
+
+            ans = min(ans, cost);
         }
+
         return ans;
     }
 };

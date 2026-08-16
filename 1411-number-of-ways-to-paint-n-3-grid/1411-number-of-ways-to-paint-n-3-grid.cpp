@@ -1,6 +1,20 @@
 class Solution {
 public:
-    string states[12] = {"RYG","RGY","RYR","RGR","YRG","YGR","YGY","YRY","GRY","GYR","GRG","GYG"};
+    vector<string>states;
+    int m ;
+
+    void generateStates(string currState,int l,char prevColor){
+        if(l==m){
+            states.push_back(currState);
+            return;
+        }
+
+        for(char ch : {'R','G','B'}){
+            if(ch==prevColor)continue;
+            generateStates(currState+ch,l+1,ch);
+        }
+    }
+
     int MOD = 1e9+7;
     int dp[5001][13];
 
@@ -36,6 +50,8 @@ public:
 
     int numOfWays(int n) {
         int result = 0;
+        m = 3;
+        generateStates("", 0, '#');
 
         memset(dp,-1,sizeof(dp));
 

@@ -11,10 +11,11 @@
  */
 class Solution {
 public:
+    typedef unsigned long long ll;
     int widthOfBinaryTree(TreeNode* root) {
         if(root == NULL) return 0;
 
-        queue<pair<TreeNode*, unsigned long long>> que;
+        queue<pair<TreeNode*, ll>> que;
         que.push({root, 0});
 
         int ans = 0;
@@ -23,18 +24,17 @@ public:
 
             int size = que.size();
 
-            unsigned long long first = que.front().second;
-            unsigned long long last = first;
+            ll first = que.front().second;
+            ll last = que.back().second;
 
-            for(int i = 0; i < size; i++) {
+            ans = max(ans,(int)(last-first+1)); 
+
+            while(size--) {
 
                 TreeNode* temp = que.front().first;
-                unsigned long long idx = que.front().second;
+                ll idx = que.front().second;
 
                 que.pop();
-
-                // Normalize index
-                idx = idx - first;
 
                 last = idx;
 
@@ -44,8 +44,6 @@ public:
                 if(temp->right)
                     que.push({temp->right, 2 * idx + 2});
             }
-
-            ans = max(ans, (int)(last + 1));
         }
 
         return ans;

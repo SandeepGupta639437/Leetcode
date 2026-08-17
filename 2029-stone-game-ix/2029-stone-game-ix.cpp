@@ -11,6 +11,6 @@ public:
             return cnt[1] > 0 && cnt[2] > 0;
         }
 
-        return abs(cnt[1] - cnt[2]) > 2;
+        return abs(cnt[1] - cnt[2]) > 2; // we do not use >=  because it can move to last index and all elements are used
     }
 };

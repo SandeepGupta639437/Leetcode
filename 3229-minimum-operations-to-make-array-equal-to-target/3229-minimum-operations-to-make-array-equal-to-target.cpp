@@ -1,11 +1,9 @@
 class Solution {
 public:
-    long long minimumOperations(vector<int>& nums, vector<int>& target1) {
-        int n = target1.size();
-
-        vector<int> target(n);
+    long long minimumOperations(vector<int>& nums, vector<int>& target) {
+        int n = target.size();
         for (int i = 0; i < n; i++) {
-            target[i] = target1[i] - nums[i];
+            target[i] = target[i] - nums[i];
         }
 
         long long ans = 0;

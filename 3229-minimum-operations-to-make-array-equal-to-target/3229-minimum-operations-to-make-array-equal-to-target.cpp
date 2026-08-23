@@ -13,8 +13,7 @@ public:
         for (int i = 0; i < n; i++) {
 
             // Direction changed
-            if ((target[i] < 0 && pos) ||
-                (target[i] >= 0 && !pos)) {
+            if ((target[i] < 0 && pos) || (target[i] >= 0 && !pos)) {
 
                 ans += abs(target[i]);
 

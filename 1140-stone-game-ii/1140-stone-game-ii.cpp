@@ -1,39 +1,26 @@
 class Solution {
 public:
-    int dp[101][101][2];
-    int n;
-    int solve(int turn,int i, vector<int>& piles, int M) {
+    int n ;
+    int dp[101][101];
+    int solve(vector<int> &piles,int m,int i){
+        if(i>=n)return 0;
+        if(dp[i][m]!=-1)return dp[i][m];
 
-        if (i > n) return 0;
+        int ans =0;
+        int total = 0;
 
-        if(dp[i][M][turn]!=-1)return dp[i][M][turn];
+        for(int k = i ; k < n;k++) total += piles[k];
 
-        int ans = 0;
-        int sum = 0;
-        if (turn == 1)
-            ans = 0;       // Alice wants maximum
-        else
-            ans = 1e9;     // Bob wants minimum
-
-        for (int x = 1; x <= 2 * M && i + x - 1 <= n; x++) {
-
-            sum += piles[i + x - 1];
-
-            if(turn==1){
-                ans = max(ans,sum+solve(0,i+x,piles,max(x,M)));
-            }else{
-                ans = min(ans,solve(1,i+x,piles,max(x,M)));
-            }
+        for (int x = 1; x <= 2 * m && i + x <= n; x++){
+            int oponent = solve(piles,max(m,x),i+x);
+            ans = max(ans,total-oponent);
         }
 
-        return dp[i][M][turn] = ans;
+        return dp[i][m] = ans;
     }
-
     int stoneGameII(vector<int>& piles) {
-
-        n = piles.size()-1;
+        n = piles.size();
         memset(dp,-1,sizeof(dp));
-
-        return solve(1,0, piles, 1);
+        return solve(piles,1,0);
     }
 };

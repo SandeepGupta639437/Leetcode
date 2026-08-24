@@ -4,23 +4,23 @@ public:
     int dp[100001];
     vector<int>pref;
 
-    // int solve(int i){
-    //     if(i==n-1)return pref[n-1];
+    int solve(int i){
+        if(i==n-1)return pref[n-1];
 
-    //     if(dp[i]!=-1)return dp[i];
+        if(dp[i]!=-1)return dp[i];
 
-    //     int take = pref[i] - solve(i+1);
-    //     int skip = solve(i+1);
+        int take = pref[i] - solve(i+1);
+        int skip = solve(i+1);
 
-    //     return dp[i] = max(skip,take);
-    // }
+        return dp[i] = max(skip,take);
+    }
 
     int stoneGameVIII(vector<int>& stones) {
         n = stones.size();
         pref.resize(n,0);
         pref[0] = stones[0];
 
-        // memset(dp,0,sizeof(dp));
+        memset(dp,0,sizeof(dp));
 
         for(int i=1;i<n;i++){
             pref[i] = pref[i-1] + stones[i];
@@ -34,5 +34,6 @@ public:
             dp[i] = max(skip,take);
         }
         return dp[1];
+        // return solve(1);
     }
 };

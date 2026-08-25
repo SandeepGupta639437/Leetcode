@@ -1,7 +1,7 @@
 class LRUCache {
 public:
-    list<int>dll;
-    map<int,pair<list<int>::iterator,int>>mp;
+    list<int>dll; // used  to store the keys
+    map<int,pair<list<int>::iterator,int>>mp; // list<int>::iterator it is the type of address for the linked list
     int n;
     LRUCache(int capacity) {
         n = capacity;

@@ -1,63 +1,74 @@
 class SegmentTree{
-    public:
-        vector<int>tree;
-        int n;
+public:
+    vector<int>tree;
+    int n;
 
-        SegmentTree(vector<int>& v){
-            n = v.size();
-            tree.resize(4*n);
-            build(1,0,n-1,v);
-        }
-        int merge(int left,int right){
-            return left+right;
-        }
+    SegmentTree(vector<int> &v){
+        n = v.size();
+        tree.resize(4*n);
+        build(1,0,n-1,v);
+    }
 
-        void build(int node,int l,int r,vector<int>& v){
-            if(l==r){
-                tree[node] = v[l];
-                return ;
-            }
-            int mid = (l+r)/2;
+    int merge(int left,int right){
+        return left+right;
+    }
 
-            build(2*node,l,mid,v);
-            build(2*node+1,mid+1,r,v);
-            tree[node] = merge(tree[2*node],tree[2*node+1]);
+    void build(int node,int l,int r,vector<int> &v){
+        if(l==r){
+            tree[node] = v[l];
+            return ;
         }
 
-        int query(int node,int l,int r,int ql,int qr){
-            if(ql>r || qr<l)return 0;
-            if(ql<=l && qr>=r)return tree[node];
-            int mid = (l+r)/2;
-            return merge(query(2*node,l,mid,ql,qr),query(2*node+1,mid+1,r,ql,qr));
+        int mid = (l+r)/2;
+
+        build(2*node,l,mid,v);
+        build(2*node+1,mid+1,r,v);
+
+        tree[node] = merge(tree[2*node],tree[2*node+1]); 
+    }
+
+    int query(int node,int l,int r,int ql,int qr){
+        if(ql>r || qr<l)return 0;
+        if(ql<=l && qr>=r)return tree[node];
+
+        int mid = (l+r)/2;
+
+        return merge(query(2*node,l,mid,ql,qr),query(2*node+1,mid+1,r,ql,qr));
+    }
+
+    void update(int node,int l,int r,int idx,int val){
+        if(l==r){
+            tree[node] = val;
+            return ;
         }
 
-        void update(int node,int l,int r,int idx,int val){
-            if(l==r){
-                tree[node] = val;
-                return ;
-            }
-            int mid = (l+r)/2;
-            if(idx<=mid){
-                update(2*node,l,mid,idx,val);
-            }else{
-                update(2*node+1,mid+1,r,idx,val);
-            }
-            tree[node]=merge(tree[node*2],tree[node*2+1]);
+        int mid = (l+r)/2;
+
+        if(idx<=mid){
+            update(2*node,l,mid,idx,val);
+        }else{
+            update(2*node+1,mid+1,r,idx,val);
         }
 
-        int query(int l,int r){
-            return query(1,0,n-1,l,r);
-        }
+        tree[node] = merge(tree[2*node],tree[2*node+1]);
+    }
 
-        void update(int idx,int val){
-            update(1,0,n-1,idx,val);
-        }
+    void update(int idx,int val){
+        return update(1,0,n-1,idx,val);
+    }
+
+    int query(int ql,int qr){
+        return query(1,0,n-1,ql,qr);
+    }
+
 };
 
 class NumArray {
 public:
     SegmentTree st;
-    NumArray(vector<int>& nums):st(nums) {}
+    NumArray(vector<int>& nums):st(nums) {
+        
+    }
     
     void update(int index, int val) {
         st.update(index,val);

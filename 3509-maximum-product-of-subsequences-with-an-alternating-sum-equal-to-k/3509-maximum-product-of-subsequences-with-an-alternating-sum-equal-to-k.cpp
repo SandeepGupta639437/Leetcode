@@ -36,8 +36,6 @@ public:
         for(auto &it:nums)sum+=it;
 
         if(k>sum || k< -sum)return -1;
-        dp.clear();
-        // memset(dp,-1,sizeof(dp));
         return solve(0,0,0,0,nums);
         
     }

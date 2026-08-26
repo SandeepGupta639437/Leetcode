@@ -32,10 +32,12 @@ public:
         k = K;
         limit = Limit;
         n = nums.size();
+        //tghis optimisation helps to solve this question
         int sum = 0;
         for(auto &it:nums)sum+=it;
 
         if(k>sum || k< -sum)return -1;
+        dp.clear();
         return solve(0,0,0,0,nums);
         
     }

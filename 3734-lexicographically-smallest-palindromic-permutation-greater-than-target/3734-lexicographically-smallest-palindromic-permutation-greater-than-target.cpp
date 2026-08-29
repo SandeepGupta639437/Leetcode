@@ -1,72 +1,83 @@
 class Solution {
 public:
-    string lexPalindromicPermutation(string str, string target) {
-        int freq[26] = {0};
-        for (char s : str)
-            freq[s - 'a']++;
+    string result = "";
+    int n;
+    char middle;
 
-        char center = 0;
-        for (int i = 0; i < 26; i++) {
-            if (freq[i] % 2) {
-                if (center != 0)
-                    return "";
-                center = 'a' + i;
-                freq[i]--;
+    bool solve(string &curr, vector<int> &count, string &target, int i, bool greater) {
+
+        if(i == n){
+            // Construct the complete palindrome
+            string temp = curr;
+            reverse(temp.begin(), temp.end());
+
+            string candidate;
+
+            if(middle != '\0')
+                candidate = curr + string(1, middle) + temp;
+            else
+                candidate = curr + temp;
+
+            if(candidate > target){
+                result = curr;
+                return true;
             }
+
+            return false;
         }
 
-        int sz = str.length();
-        int half = sz / 2;
-        for (int i = 0; i < half; i++)
-            freq[target[i] - 'a'] -= 2;
+        for(char ch = 'a'; ch <= 'z'; ch++){
 
-        if (check(freq)) {
-            string head = target.substr(0, half);
-            string rev = head;
-            reverse(rev.begin(), rev.end());
-            string tail = "";
-            if (center != 0)
-                tail += center;
-            tail += rev;
-            if (tail > target.substr(half))
-                return head + tail;
+            if(count[ch - 'a'] == 0) continue;
+
+            if(!greater && ch < target[i]) continue;
+
+            curr.push_back(ch);
+            count[ch - 'a']--;
+
+            bool isGreater = greater || ch > target[i];
+
+            if(solve(curr, count, target, i + 1, isGreater)) return true;
+
+            curr.pop_back();
+            count[ch - 'a']++;
         }
 
-        for (int i = half - 1; i >= 0; i--) {
-            char w = target[i];
-            freq[w - 'a'] += 2;
-            if (!check(freq))
-                continue;
-
-            for (int j = (w - 'a') + 1; j < 26; j++) {
-                if (freq[j] == 0)
-                    continue;
-                freq[j] -= 2;
-                string result = target.substr(0, i + 1);
-                result[i] = 'a' + j;
-
-                for (int k = 0; k < 26; k++) {
-                    int cnt = freq[k] / 2;
-                    if (cnt > 0)
-                        result.append(cnt, 'a' + k);
-                }
-
-                string part = result;
-                reverse(part.begin(), part.end());
-                if (center != 0)
-                    result.push_back(center);
-                result += part;
-                return result;
-            }
-        }
-
-        return "";
+        return false;
     }
 
-    bool check(int f[]) {
-        for (int i = 0; i < 26; i++)
-            if (f[i] < 0)
-                return false;
-        return true;
+    string lexPalindromicPermutation(string s, string target1) {
+
+        result = "";
+
+        vector<int> count(26, 0);
+
+        for(char ch : s) count[ch - 'a']++;
+
+        int uniqCnt = 0;
+        middle = '\0';
+
+        for(int i = 0; i < 26; i++){
+            if(count[i] % 2){
+                uniqCnt++;
+                middle = 'a' + i;
+            }
+            count[i] /= 2;
+        }
+
+        if(uniqCnt > 1) return "";
+
+        n = s.length() / 2;
+
+        string curr;
+
+        if(!solve(curr, count, target1, 0, false)) return "";
+
+        string temp = result;
+        reverse(temp.begin(), temp.end());
+
+        if(s.length() % 2) return result + string(1, middle) + temp;
+
+        return result + temp;
     }
 };

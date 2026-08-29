@@ -7,9 +7,9 @@ public:
         for(int i=0;i<n;i++){
             int total = nums[i];
             string str = "";
-            while (total >= (1LL << 25)) {
+            while (total >= pow(2,'z'-'a') ) {
                 str += 'z';
-                total -= (1LL << 25);
+                total -= pow(2,'z'-'a') ;
             }
             for(char ch = 'z';ch>='a' ; ch--){
                 if(total >= pow(2,ch-'a')){

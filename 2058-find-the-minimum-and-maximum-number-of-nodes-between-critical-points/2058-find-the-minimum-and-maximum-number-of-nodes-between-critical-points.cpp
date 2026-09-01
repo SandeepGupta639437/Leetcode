@@ -1,46 +1,52 @@
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
- */
 class Solution {
 public:
     vector<int> nodesBetweenCriticalPoints(ListNode* head) {
-        int first = -1;
-        int last = -1;
-        int idx = 1;
-        int minDist = INT_MAX;
+
+        int firstCriticalPos = -1;
+        int prevCriticalPos = -1;
+        int currCriticalPos = 1;
 
         ListNode* prev = head;
         ListNode* curr = head->next;
 
-        while(curr->next != nullptr) {
-            if((curr->val > prev->val && curr->val > curr->next->val) ||
-               (curr->val < prev->val && curr->val < curr->next->val)) {
+        int mini = INT_MAX;
+        int maxi = -1;
 
-                if(first == -1) {
-                    first = idx;
-                    last = idx;
+        while (curr->next != nullptr) {
+
+            // Local minima
+            bool isCritical = (prev->val > curr->val && curr->val < curr->next->val);
+
+            // Local maxima
+            isCritical = isCritical || (prev->val < curr->val && curr->val > curr->next->val);
+
+            if (isCritical) {
+                // We already found a previous critical point
+                if (prevCriticalPos != -1) {
+                    mini = min( mini, currCriticalPos - prevCriticalPos);
                 }
-                else {
-                    minDist = min(minDist, idx - last);
-                    last = idx;
+
+                // First critical point
+                if (firstCriticalPos == -1) {
+                    firstCriticalPos = currCriticalPos;
                 }
+
+                prevCriticalPos = currCriticalPos;
             }
 
             prev = curr;
             curr = curr->next;
-            idx++;
+            currCriticalPos++;
         }
 
-        if(first == last)
+        // bss ek yaa 0 critical points mile hai to distance possible hi nhi hai
+        if (firstCriticalPos == -1 || firstCriticalPos == prevCriticalPos) {
             return {-1, -1};
+        }
 
-        return {minDist, last - first};
+        // Maximum distance = last - first
+        maxi = prevCriticalPos - firstCriticalPos;
+
+        return {mini, maxi};
     }
 };

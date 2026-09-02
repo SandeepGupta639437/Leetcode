@@ -1,4 +1,4 @@
-// DIJKSTRA ALGO
+// BELLMANFORD ALGO
 
 class Solution {
 public:

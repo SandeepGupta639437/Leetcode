@@ -12,9 +12,10 @@ public:
         vector<int> dis(n, INT_MAX);
         dis[src] = 0;
         while (!q.empty()) {
-            int stops = (q.front())[0];
-            int node = (q.front())[1];
-            int cost = (q.front())[2];
+            auto x = q.front();
+            int stops = x[0];
+            int node  = x[1];
+            int cost  = x[2];
             q.pop();
 
             if (stops > k) continue;

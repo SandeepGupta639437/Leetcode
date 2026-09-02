@@ -27,7 +27,6 @@ public:
     }
 
 
-
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
         vector<vector<int>> SPM(n,vector<int>(n,INT_MAX));
 

@@ -33,7 +33,10 @@ public:
 class Solution {
 public:
     int makeConnected(int n, vector<vector<int>>& connections) {
+        if(connections.size() < n - 1) return -1;
+
         DSU dsu(n);
+
         for(int i=0;i<n;i++){
             dsu.make(i);
         }
@@ -51,6 +54,6 @@ public:
             }
         }
 
-        return (connections.size()<n-1)?-1 : components-1;
+        return components-1;
     }
 };

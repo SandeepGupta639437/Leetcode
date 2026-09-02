@@ -1,34 +1,23 @@
-// BELLMANFORD ALGO
+// FLOYEDWARSHALL ALGO
 
 class Solution {
 public:
     typedef pair<int,int> P;
 
-    void bellmanFord(int n , vector<vector<int>> &edges, vector<int> &result, int S){
-        fill(begin(result),end(result),INT_MAX);
-
-        result[S] = 0;
-
-        while(n--){
-            for(auto &edge: edges){
-                int u = edge[0];
-                int v = edge[1];
-                int wt = edge[2];
-
-                if(result[u]!= INT_MAX && result[u]+ wt < result[v]){
-                    result[v] = result[u]+wt;
-                }
-                if(result[v]!= INT_MAX && result[v]+ wt < result[u]){
-                    result[u] = result[v]+wt;
+    void floyedWarshall(int n,vector<vector<int>> &SPM ){
+        for(int via=0;via<n;via++){
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    SPM[i][j] = min(SPM[i][j],SPM[i][via]+SPM[via][j]);
                 }
             }
         }
-
     }
 
 
+
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
-        vector<vector<int>> SPM(n,vector<int>(n,INT_MAX));
+        vector<vector<int>> SPM(n,vector<int>(n,1e9+7));
 
         for(int i=0;i<n;i++){
             SPM[i][i] = 0;
@@ -43,9 +32,11 @@ public:
             SPM[v][u] = distance;
         }
 
-        for(int i=0;i<n;i++){
-            bellmanFord(n,edges,SPM[i],i);
-        }
+        // for(int i=0;i<n;i++){
+        //     bellmanFord(n,edges,SPM[i],i);
+        // }
+
+        floyedWarshall(n,SPM);
 
         int ans = 0;
         int maxCnt = n;

@@ -4,29 +4,29 @@ class Solution {
 public:
     typedef pair<int,int> P;
 
-    void dijkshtra(int n , vector<vector<P>> &adj, vector<int> &result, int S){
-        priority_queue< P,vector<P> , greater<P> > pq;
-        pq.push({0,S}); // distance , node
+    void bellmanFord(int n , vector<vector<int>> &edges, vector<int> &result, int S){
+        fill(begin(result),end(result),INT_MAX);
 
-        fill(result.begin(),result.end(),INT_MAX);
+        result[S] = 0;
 
-        while(!pq.empty()){
-            auto x = pq.top();
-            int d = x.first;
-            int node = x.second;
-            pq.pop();
+        while(n--){
+            for(auto &edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+                int wt = edge[2];
 
-            for(auto& p: adj[node]){
-                int adjNode = p.first;
-                int dist = p.second;
-
-                if(d + dist < result[adjNode]){
-                    result[adjNode] = d + dist;
-                    pq.push({d+dist, adjNode});
+                if(result[u]!= INT_MAX && result[u]+ wt < result[v]){
+                    result[v] = result[u]+wt;
+                }
+                if(result[v]!= INT_MAX && result[v]+ wt < result[u]){
+                    result[u] = result[v]+wt;
                 }
             }
         }
+
     }
+
+
 
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
         vector<vector<int>> SPM(n,vector<int>(n,INT_MAX));
@@ -35,19 +35,17 @@ public:
             SPM[i][i] = 0;
         }
 
-        vector<vector<P>> adj(n);
-
         for(auto &edge: edges){
             int u = edge[0];
             int v = edge[1];
             int distance = edge[2];
             
-            adj[u].push_back({v,distance});
-            adj[v].push_back({u,distance});
+            SPM[u][v] = distance;
+            SPM[v][u] = distance;
         }
 
         for(int i=0;i<n;i++){
-            dijkshtra(n,adj,SPM[i],i);
+            bellmanFord(n,edges,SPM[i],i);
         }
 
         int ans = 0;

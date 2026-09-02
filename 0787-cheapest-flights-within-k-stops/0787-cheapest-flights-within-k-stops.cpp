@@ -1,38 +1,40 @@
 class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-        
-        vector<vector<pair<int, int>>> adj(n);
-        for (auto& it : flights) {
-            adj[it[0]].push_back({it[1], it[2]});
+        vector<vector<pair<int,int>>>adj(n);
+
+        for(auto &v : flights){
+            adj[v[0]].push_back({v[1],v[2]});
         }
 
-        queue<vector<int>> q;
-        q.push({0, src, 0});
-        vector<int> dis(n, INT_MAX);
-        dis[src] = 0;
-        while (!q.empty()) {
-            auto x = q.front();
-            int stops = x[0];
-            int node  = x[1];
-            int cost  = x[2];
-            q.pop();
+        queue< pair<int,pair<int,int>> >que;
+        que.push({0,{src,0}}); // stopstaken , node(from) , cost
 
-            if (stops > k) continue;
+        vector<int>dist(n,INT_MAX);
+        dist[src] = 0;
 
-            for (auto& it : adj[node]) {
-                int next = it.first;
-                int price = it.second;
+        while(!que.empty()){
+            auto x = que.front();
+            int stops = x.first;
+            int node = x.second.first;
+            int cost = x.second.second;
 
-                int newCost = cost + price;
-                if (newCost < dis[next]) {
-                    dis[next] = newCost;
-                    q.push({stops + 1, next, newCost});
+            que.pop();
+
+            if(stops > k)continue;
+
+            for(auto &v : adj[node]){
+                int nextNode = v.first;
+                int nextCost = cost + v.second;
+
+                if(nextCost < dist[nextNode]){
+                    dist[nextNode] = nextCost;
+                    que.push({stops+1,{nextNode,nextCost}});
                 }
             }
         }
-        if (dis[dst] == INT_MAX) return -1;
+        if(dist[dst] == INT_MAX)return -1;
 
-        return dis[dst];
+        return dist[dst];
     }
 };

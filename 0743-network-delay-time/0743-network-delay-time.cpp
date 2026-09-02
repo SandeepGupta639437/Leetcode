@@ -1,42 +1,40 @@
 class Solution {
 public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-        vector<vector<pair<int,int>>> adj(n + 1);
+        vector<vector<pair<int,int>>>adj(n+1);
 
-        for(auto &v : times) {
-            adj[v[0]].push_back({v[1], v[2]});
+        for(auto &v : times){
+            adj[v[0]].push_back({v[1],v[2]});
         }
 
-        priority_queue<
-            pair<int,int>,
-            vector<pair<int,int>>,
-            greater<pair<int,int>>
-        > pq;
+        queue<pair<int,int>> que;
 
-        vector<int> dist(n + 1, INT_MAX);
+        vector<int> timeTaken(n+1,INT_MAX);
+        que.push({0,k});
+        timeTaken[k] = 0;
 
-        dist[k] = 0;
-        pq.push({0, k});
+        while(!que.empty()){
+            auto x = que.front();
+            que.pop();
 
-        while(!pq.empty()) {
-            auto [time, node] = pq.top();
-            pq.pop();
+            int timeT = x.first;
+            int node = x.second;
 
-            if(time > dist[node])
-                continue;
+            for(auto &v : adj[node]){
+                int nextNode = v.first;
+                int nextTime = timeT + v.second;
 
-            for(auto &[nextNode, edgeTime] : adj[node]) {
-                int nextTime = time + edgeTime;
-
-                if(nextTime < dist[nextNode]) {
-                    dist[nextNode] = nextTime;
-                    pq.push({nextTime, nextNode});
+                if(nextTime < timeTaken[nextNode]){
+                    timeTaken[nextNode] = nextTime;
+                    que.push({nextTime,nextNode});
                 }
             }
         }
 
-        int ans = *max_element(dist.begin() + 1, dist.end());
+        int ans = *max_element(timeTaken.begin()+1,timeTaken.end());
 
-        return ans == INT_MAX ? -1 : ans;
+        if(ans == INT_MAX)return -1;
+
+        return ans;
     }
 };

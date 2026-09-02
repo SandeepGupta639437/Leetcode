@@ -8,7 +8,9 @@ public:
         for(int via=0;via<n;via++){
             for(int i=0;i<n;i++){
                 for(int j=0;j<n;j++){
-                    SPM[i][j] = min(SPM[i][j],SPM[i][via]+SPM[via][j]);
+                    if(SPM[i][via] != INT_MAX && SPM[via][j] != INT_MAX) {
+                        SPM[i][j] = min(SPM[i][j], SPM[i][via] + SPM[via][j]);
+                    }
                 }
             }
         }
@@ -17,7 +19,7 @@ public:
 
 
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
-        vector<vector<int>> SPM(n,vector<int>(n,1e9+7));
+        vector<vector<int>> SPM(n,vector<int>(n,INT_MAX));
 
         for(int i=0;i<n;i++){
             SPM[i][i] = 0;

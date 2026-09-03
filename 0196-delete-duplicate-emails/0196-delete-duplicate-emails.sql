@@ -1,10 +1,7 @@
 # Write your MySQL query statement below
-WITH cte AS (
-    SELECT id 
-    FROM (
-        SELECT email, min(id) AS id 
-        FROM Person 
-        GROUP BY email
+with cte as (
+    SELECT id FROM (
+        SELECT email,min(id) as id FROM Person GROUP BY email
     ) t
 )
 

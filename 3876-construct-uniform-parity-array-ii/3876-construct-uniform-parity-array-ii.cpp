@@ -5,9 +5,9 @@ public:
         int mini = *min_element(begin(nums1),end(nums1));
         if(mini%2==1)return true; // agr sbse chota element odd hai to hum sbko odd bna skte hai 
 
-        for(int x : nums1)if(x%2==1)return false; // age pehla odd nhi hai to agr koi aur odd hoga to possible nhi hoga
+        for(int x : nums1)if(x%2==1)return false; // agr pehla odd nhi hai to agr koi aur odd hoga to possible nhi hoga
         
-        return true;
+        return true; // agr yha phonch gye hai iska mtlb saare even hai
         
     }
 };

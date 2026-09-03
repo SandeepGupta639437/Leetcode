@@ -4,7 +4,7 @@ public:
         int n = nums.size();
         int l = 0, r = n-1;
         int ans = nums[0];
-        while(l<r){
+        while(l<=r){
             int mid = l+(r-l)/2;
             if(nums[l]<=nums[mid]){
                 ans = min(ans,nums[l]);
@@ -14,6 +14,6 @@ public:
                 r = mid - 1;
             }
         }
-        return min(nums[l],ans);
+        return ans;
     }
 };

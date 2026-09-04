@@ -1,85 +1,98 @@
 class Solution {
 public:
-    string check(int x,int n,int k){
+
+    long long fact[11] = {
+        1, 1, 2, 6, 24, 120,
+        720, 5040, 40320, 362880, 3628800
+    };
+
+    long long makePalindrome(int x, int n) {
+
         long long result = x;
-        int to_add;
 
-        if(n % 2) to_add = result / 10;
-        else to_add = result;
+        int y = (n % 2) ? x / 10 : x;
 
-        while(to_add){
-            result = result*10 + (to_add%10);
-            to_add/=10;
+        while (y) {
+            result = result * 10 + y % 10;
+            y /= 10;
         }
 
-        string s = to_string(result);
-        
-        if(result%k==0)return s;
-        return "-1";
+        return result;
     }
 
-    long long fact(int n) {
-        long long ans = 1;
-
-        for (int i = 2; i <= n; i++)
-            ans *= i;
-
-        return ans;
-    }
-
-    long long countPermutations(string &s) {
+    long long countWays(long long num, int n) {
 
         int freq[10] = {};
 
-        for(char ch : s)
-            freq[ch - '0']++;
+        // Get digit frequency
+        for (int i = 0; i < n; i++) {
+            freq[num % 10]++;
+            num /= 10;
+        }
 
-        // Total permutations
-        long long total = fact(s.length());
+        // Total unique permutations
+        long long total = fact[n];
 
-        for(int i = 0; i < 10; i++) total /= fact(freq[i]);
+        for (int d = 0; d < 10; d++)
+            total /= fact[freq[d]];
 
-         // No leading zero problem
-        if(freq[0] == 0) return total;
+        // Remove permutations starting with 0
+        if (freq[0] > 0) {
 
-        // Count permutations starting with zero
-        long long invalid = fact(s.length() - 1);
+            long long invalid = fact[n - 1];
 
-        invalid /= fact(freq[0] - 1);
+            invalid /= fact[freq[0] - 1];
 
-        for(int i = 1; i < 10; i++)
-            invalid /= fact(freq[i]);
+            for (int d = 1; d < 10; d++)
+                invalid /= fact[freq[d]];
 
-        return total - invalid;
+            total -= invalid;
+        }
+
+        return total;
     }
 
     long long countGoodIntegers(int n, int k) {
-        int half = (n+1)/2;
-        int start = 1; 
-        for(int i=2;i<=half;i++){
-            start*=10;
-        }
-        int end = start*10;
-        int ans = 0;
 
-        set<vector<int>> seen;
+        int half = (n + 1) / 2;
 
-        for(int x = start;x<end;x++){
+        int start = 1;
 
-            string palin = check(x,n,k);
+        for (int i = 1; i < half; i++) start *= 10;
 
-            if(palin=="-1")continue;
+        int end = start * 10;
 
-            vector<int> freq(10, 0);
+        long long ans = 0;
 
-            for(char ch : palin) freq[ch - '0']++;
+        unordered_set<long long> seen;
 
-            // Already counted this digit multiset
-            if(seen.count(freq)) continue;
+        for (int x = start; x < end; x++) {
 
-            seen.insert(freq);
+            long long pal = makePalindrome(x, n);
 
-            ans+=countPermutations(palin);
+            if (pal % k != 0) continue;
+
+            // Encode frequency of digits
+            int freq[10] = {};
+            long long temp = pal;
+
+            for (int i = 0; i < n; i++) {
+                freq[temp % 10]++;
+                temp /= 10;
+            }
+
+            // Encode frequency array into one number
+            long long key = 0;
+
+            for (int d = 0; d < 10; d++) {
+                key = key * 13 + freq[d];
+            }
+
+            if (seen.count(key)) continue;
+
+            seen.insert(key);
+
+            ans += countWays(pal, n);
         }
 
         return ans;

@@ -25,7 +25,7 @@ public:
         int freq[10] = {};
 
         // Get digit frequency
-        for (int i = 0; i < n; i++) {
+        while(num) {
             freq[num % 10]++;
             num /= 10;
         }
@@ -33,18 +33,20 @@ public:
         // Total unique permutations
         long long total = fact[n];
 
-        for (int d = 0; d < 10; d++)
+        for (int d = 0; d < 10; d++){
             total /= fact[freq[d]];
+        } 
 
         // Remove permutations starting with 0
         if (freq[0] > 0) {
 
-            long long invalid = fact[n - 1];
+            long long invalid = fact[n - 1]; // as 0  is fixed at first position 
 
-            invalid /= fact[freq[0] - 1];
+            invalid /= fact[freq[0] - 1]; // arrange for 0 that are left
 
-            for (int d = 1; d < 10; d++)
+            for (int d = 1; d < 10; d++){ // we handle other digits than 0
                 invalid /= fact[freq[d]];
+            }
 
             total -= invalid;
         }

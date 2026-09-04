@@ -1,14 +1,22 @@
 class Solution {
 public:
     int arrangeCoins(int n) {
-        long long sum = 0; // Start from 0
-        int i = 0;
-        
-        while (sum + i + 1 <= n) { // Check if the next row can be formed
-            i++;
-            sum += i; // Add i to the sum
+        int l = 0, r = n;
+        int ans  = 0;
+
+        while(l<=r){
+            long long mid = l + (r-l)/2;
+
+            long long val = (mid+mid*mid)/2;
+
+            if(val == n)return mid;
+            if(val>n){
+                r = mid-1;
+            }else{
+                ans = mid;
+                l = mid+1;
+            }
         }
-        
-        return i; // Return the last valid row count
+        return ans;
     }
 };

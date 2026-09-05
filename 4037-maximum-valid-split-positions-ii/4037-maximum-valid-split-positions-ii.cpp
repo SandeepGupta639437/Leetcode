@@ -17,12 +17,12 @@ public:
             }
             suffix[i] = gcd(suffix[i + 1], a[i]);
         }
+        
         int curr = 0;
         for (int i = 0; i < n - 1; i++) {
-            if (i == skip)
-                continue;
-            if (prefix[i + 1] == suffix[i + 1])
-                curr++;
+            if (i == skip)  continue;
+
+            if (prefix[i + 1] == suffix[i + 1]) curr++;
         }
         return curr;
     }
@@ -36,8 +36,9 @@ public:
         }
 
         for (int i = 0; i <= n; i++) {
-            if (i > 0 && prefixmain[i] == prefixmain[i - 1]) continue;
-            
+            if (i > 0 && prefixmain[i] == prefixmain[i - 1]) continue; // remove krne se koi fayda nhi hone wala 
+            //ye number of solve calls ko bhut decrease krde rha hai
+
             int skip = i - 1;
             vector<int> prefix(n + 1, 0);
             vector<int> suffix(n + 1, 0);

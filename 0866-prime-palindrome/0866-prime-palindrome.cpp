@@ -22,8 +22,8 @@ public:
         int no = (n==1)?2:n;
 
         while(true){
-            if((no>1e3 && no<1e4) || (no>1e5 && no<1e6) || (no>1e7 && no<1e8)){
-                no = pow(10,ceil(log10(no)));
+            if((no>1e3 && no<1e4) || (no>1e5 && no<1e6) || (no>1e7 && no<1e8)){ // all even length palindromic number except 11 all are divisible by 11 by divisibility condition of 11
+                no = pow(10,ceil(log10(no))); // moved to odd length
                 continue;
             }
 

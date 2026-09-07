@@ -40,8 +40,7 @@ public:
             dp[i] = total;
         }
 
-
-        return (solve(n)-1+M)%M;
+        return (dp[n]-1+M)%M;
     }
 };
 

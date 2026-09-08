@@ -9,7 +9,7 @@ public:
         return y;
     }
     int maximumCandies(vector<int>& candies, long long k) {
-        int l = 1, r = 1e7+1;
+        int l = 1, r = *max_element(begin(candies),end(candies));
         int ans = 0;
 
         while(l<=r){

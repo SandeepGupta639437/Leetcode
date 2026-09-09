@@ -4,19 +4,21 @@ public:
     int dp[2001];
     vector<int>prev;
 
-    int solve(int n){
-        if(n==0)return 1;
-        if(dp[n]!=-1)return dp[n];
+    // int solve(int n){
+    //     if(n==0)return 1;
+    //     if(dp[n]!=-1)return dp[n];
 
-        int total = ((1LL*2*solve(n-1))%M);
+    //     int total = ((1LL*2*solve(n-1))%M);
 
-        if(prev[n] != 0){
-            int duplicates = solve(prev[n]-1);
-            total = (total-duplicates+M)%M;
-        }
+    //     if(prev[n] != 0){
+    //         int duplicates = solve(prev[n]-1);
+    //         total = (total-duplicates+M)%M;
+    //     }
 
-        return dp[n] = total;
-    }
+    //     return dp[n] = total;
+    // }
+
+
     int distinctSubseqII(string s) {
         int n = s.length();
         memset(dp,-1,sizeof(dp));
@@ -28,6 +30,8 @@ public:
             prev[i] = lastSeen[idx] ; // lastSeen stores the charater last time visited so that we casn remove duplicated
             lastSeen[idx] = i; 
         }
+
+        // bottom up
 
         dp[0] = 1;
 
@@ -41,6 +45,8 @@ public:
         }
 
         return (dp[n]-1+M)%M;
+
+        // return (solve(n)-1+M)%M; // top down
     }
 };
 

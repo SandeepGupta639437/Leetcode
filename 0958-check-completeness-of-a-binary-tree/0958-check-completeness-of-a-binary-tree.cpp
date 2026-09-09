@@ -11,30 +11,22 @@
  */
 class Solution {
 public:
+    int count(TreeNode* root){
+        if(root==NULL)return 0;
+
+        return 1 + count(root->left) + count(root->right);
+    }
+
+    bool dfs(TreeNode* root,int totalNodes,const int& i){
+        if(root==NULL)return true;
+        if(i>totalNodes)return false;
+
+        return dfs(root->left,totalNodes,2*i) && dfs(root->right,totalNodes,2*i+1);
+    }
+
     bool isCompleteTree(TreeNode* root) {
-
-        queue<TreeNode*>que;
-
-        que.push(root);
-
-        bool flag = false;
-        while(!que.empty()){
-            int sz = que.size();
-            while(sz--){
-                auto node = que.front();
-                que.pop();
-
-                if(node->left == NULL) flag = true;
-                if(node->left != NULL && flag) return false;
-                if(node->left != NULL) que.push(node->left);
-
-                if(node->right == NULL) flag = true;
-                if(node->right != NULL && flag) return false;
-                if(node->right != NULL) que.push(node->right);
-
-            }
-        }
-
-        return true;
+        int totalNodesCnt = count(root);
+        int i = 1;
+        return dfs(root,totalNodesCnt,i);
     }
 };

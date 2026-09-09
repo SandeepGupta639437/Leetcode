@@ -15,10 +15,7 @@ public:
     TreeNode* solve(vector<int>& preorder, vector<int>& inorder,int& idx,int start,int end){
         if(start>end)return NULL;
 
-        TreeNode* root = new TreeNode;
-
         int val = preorder[idx];
-        root->val = val;
 
         int i = start;
         while(i<n){
@@ -27,7 +24,7 @@ public:
         }
 
         idx++;
-
+        TreeNode* root = new TreeNode(val);
         root->left = solve(preorder,inorder,idx,start,i-1);
         root->right = solve(preorder,inorder,idx,i+1,end);
 

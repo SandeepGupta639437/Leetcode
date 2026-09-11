@@ -1,30 +1,35 @@
 class Solution {
-public:
-    vector<int> findEvenNumbers(vector<int>& digits) {
-        int n = digits.size();
-        set<int> st;
+ public:
+  vector<int> findEvenNumbers(vector<int>& digits) {
+    // generating frequency map of the given digits
+    vector<int> count(10, 0);
+    for (auto& d : digits) count[d]++;
 
-        for(int i = 0; i < n; i++){
-            if(digits[i] == 0) continue;
+    vector<int> res;
 
-            for(int j = 0; j < n; j++){
-                if(j == i) continue;
+    for (int num = 100; num < 999; num += 2) {
+      // generating frequency map of the current number
+      vector<int> currCount(10, 0);
+      int temp = num;
 
-                for(int k = 0; k < n; k++){
-                    if(k == i || k == j) continue;
+      while (temp) {
+        currCount[temp % 10]++;
+        temp /= 10;
+      }
 
-                    if(digits[k] % 2 == 0){
-                        int num = digits[i] * 100 +  digits[j] * 10 +  digits[k];
-                        st.insert(num);
-                    }
-                }
-            }
+      // checking if the number can be generated or not
+      bool flag = true;
+      for (int i = 0; i < 10; i++) {
+        if (currCount[i] > count[i]) {
+          flag = false;
+          break;
         }
+      }
 
-        vector<int>result;
-
-        for(auto it:st)result.push_back(it);
-
-        return result;
+      if (flag) {
+        res.push_back(num);
+      }
     }
+    return res;
+  }
 };

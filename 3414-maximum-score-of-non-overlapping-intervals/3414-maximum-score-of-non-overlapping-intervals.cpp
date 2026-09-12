@@ -1,4 +1,4 @@
-/// TOP DOWN
+/// BOTTOM UP
 
 class Solution {
 public:
@@ -9,40 +9,41 @@ public:
 
     int n ;
     vector<int> nextIdx;
-    vector<vector<Node>>dp;
+    // vector<vector<Node>>dp;
+    vector<vector<Node>>t;
 
-    Node solve(vector<vector<int>>& intervals, int i,int k){
-        if(k==0 || i>=n)return Node();
+    // Node solve(vector<vector<int>>& intervals, int i,int k){
+    //     if(k==0 || i>=n)return Node();
 
-        if(dp[i][k].score != -1)return dp[i][k];
+    //     if(dp[i][k].score != -1)return dp[i][k];
 
-        Node skip = solve(intervals,i+1,k);
+    //     Node skip = solve(intervals,i+1,k);
 
-        int weight = intervals[i][2];
-        int idx = intervals[i][3];
-        int j = nextIdx[i];  // next index if we take interval idx
+    //     int weight = intervals[i][2];
+    //     int idx = intervals[i][3];
+    //     int j = nextIdx[i];  // next index if we take interval idx
 
-        Node temp = solve(intervals,j,k-1); // take this intervals
+    //     Node temp = solve(intervals,j,k-1); // take this intervals
 
-        Node take ;
-        take.score = temp.score + weight;
-        take.idxs = temp.idxs;
+    //     Node take ;
+    //     take.score = temp.score + weight;
+    //     take.idxs = temp.idxs;
 
-        take.idxs.push_back(idx);
+    //     take.idxs.push_back(idx);
 
-        sort(begin(take.idxs),end(take.idxs));
+    //     sort(begin(take.idxs),end(take.idxs));
 
-        Node result;
-        if(skip.score > take.score){
-            result = skip;
-        }else if(skip.score < take.score){
-            result = take;
-        }else{
-            result = (skip.idxs<take.idxs) ? skip : take;
-        }
+    //     Node result;
+    //     if(skip.score > take.score){
+    //         result = skip;
+    //     }else if(skip.score < take.score){
+    //         result = take;
+    //     }else{
+    //         result = (skip.idxs<take.idxs) ? skip : take;
+    //     }
 
-        return dp[i][k] = result;
-    }
+    //     return dp[i][k] = result;
+    // }
 
     int findNext(vector<vector<int>>& intervals,int end){
         int l = 0;
@@ -81,8 +82,40 @@ public:
 
         int K = 4;
 
-        dp.assign(n+1,vector<Node>(K+1));
+        // dp.assign(n+1,vector<Node>(K+1));
+        t.assign(n+1,vector<Node>(K+1));
 
-        return solve(intervals,0,K).idxs;
+
+
+        for(int i=n-1;i>=0;i--){
+            int weight = intervals[i][2];
+            int idx = intervals[i][3];
+            int j = nextIdx[i];  // next index if we take interval idx
+
+            for(int k = 1;k<=K;k++){
+                Node skip = t[i+1][k];
+                Node temp = t[j][k-1];
+                Node take;
+                take.score = temp.score + weight;
+                take.idxs = temp.idxs;
+                take.idxs.push_back(idx);
+                sort(begin(take.idxs),end(take.idxs));
+
+                Node result;
+                if(skip.score > take.score){
+                    result = skip;
+                }else if(skip.score < take.score){
+                    result = take;
+                }else{
+                    result = (skip.idxs<take.idxs) ? skip : take;
+                }
+
+                t[i][k] = result;
+            }
+        }
+
+        return t[0][K].idxs;   
+
+        // return solve(intervals,0,K).idxs;
     }
 };

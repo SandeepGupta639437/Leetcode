@@ -1,5 +1,6 @@
-class Solution {
+class SegmentTree{
 public:
+
     struct Node {
         int pre = 0; 
         int suf = 0;
@@ -10,6 +11,13 @@ public:
 
     int n;
     vector<Node> segTree; //segmen tree size 4*n
+
+    SegmentTree(string& s){
+        n = s.length();
+        segTree.assign(4 * n, Node()); //segmen tree size 4*n
+
+        buildSegmentTree(0, 0, n - 1, s);
+    }
 
     Node merge(const Node& L, const Node& R, int leftLen, int rightLen) {
         Node res;
@@ -60,21 +68,27 @@ public:
         segTree[i] = merge(segTree[2 * i + 1], segTree[2 * i + 2], mid - l + 1, r - mid);
     }
 
+    void update(int pos,char ch){
+        return update(0,0,n-1,pos,ch);
+    }
+
+};
+
+class Solution {
+public:
+
     vector<int> longestRepeating(string s, string queryCharacters, vector<int>& queryIndices) {
-        n = s.size();
-        segTree.assign(4 * n, Node()); //segmen tree size 4*n
-
-        buildSegmentTree(0, 0, n - 1, s);
-
         int k = queryIndices.size();
+
+        SegmentTree st(s);
 
         vector<int> result(k);
         for (int i = 0; i < k; i++) {
             int pos = queryIndices[i];
             char ch = queryCharacters[i];
-            update(0, 0, n - 1, pos, ch);
+            st.update(pos,ch);
             
-            result[i] = segTree[0].maxLen; //root node covers entire string
+            result[i] = st.segTree[0].maxLen; //root node covers entire string
         }
 
         return result;

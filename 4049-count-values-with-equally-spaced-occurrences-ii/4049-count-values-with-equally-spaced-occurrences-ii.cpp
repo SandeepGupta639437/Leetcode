@@ -1,7 +1,7 @@
 class Solution {
 public:
     int countSpecialIntegers(vector<int>& nums) {
-        unordered_map<long long,vector<int>>mpp;
+        unordered_map<int,vector<int>>mpp;
         int n = nums.size();
 
         for(int i=0;i<n;i++){
@@ -12,15 +12,14 @@ public:
 
         for(auto it:mpp){
             if(it.second.size()<3)continue;
-            else{
-                int flag = false;
-                int diff = it.second[1]-it.second[0];
-                for(int i=1;i<it.second.size();i++){
-                    if(it.second[i]-it.second[i-1] == diff)continue;
-                    else flag=true;
-                }
-                if(!flag)ans++;
+            
+            bool flag = false;
+            int diff = it.second[1]-it.second[0];
+            for(int i=1;i<it.second.size();i++){
+                if(it.second[i]-it.second[i-1] == diff)continue;
+                else flag=true;
             }
+            if(!flag)ans++;
         }
         return ans;
     }

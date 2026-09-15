@@ -14,7 +14,7 @@ public:
         // Take palindrome starting at i
         for(int j = i + k - 1; j < n; j++) {
             if(t[i][j]) {
-                ans = max(ans, 1 + solve(j + 1, s, k));
+                ans = max(ans,1 + solve(j + 1, s, k));
             }
         }
 

@@ -33,13 +33,11 @@ public:
 
         for (int c = 0; c < 26; c++) {
 
-            if (pos[c].first == -1)
-                continue;
+            if (pos[c].first == -1) continue;
 
             auto [l, r] = getRange(s, pos, c);
 
-            if (l != -1)
-                ranges.push_back({l, r});
+            if (l != -1) ranges.push_back({l, r});
         }
 
         sort(ranges.begin(), ranges.end(), [](auto &a, auto &b) { return a.second < b.second; });

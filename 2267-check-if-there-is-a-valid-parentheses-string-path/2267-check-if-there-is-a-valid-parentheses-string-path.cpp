@@ -1,7 +1,7 @@
 class Solution {
 public:
     int m, n;
-    int dp[101][101][2000];
+    int dp[101][101][201];
     bool solve(int i,int j,vector<vector<char>>& grid,int sum){
         if(i>=m || i<0 || j>=n || j<0)return false;
 

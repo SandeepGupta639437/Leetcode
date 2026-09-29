@@ -1,39 +1,25 @@
 class Solution {
 public:
     int m, n;
-    int dp[101][101][201];
+    int dp[101][101][2000];
+    bool solve(int i,int j,vector<vector<char>>& grid,int sum){
+        if(i>=m || i<0 || j>=n || j<0)return false;
 
-    bool solve(int i, int j, int sum, vector<vector<char>>& grid) {
-
-        sum += (grid[i][j]=='(')?1:-1;
+        if(grid[i][j]=='(')sum++;
+        else sum--;
 
         if(sum < 0) return false;
 
-        if(dp[i][j][sum] != -1) {
-            return dp[i][j][sum];
-        }
-        
-        if(i==m-1 && j==n-1) return dp[i][j][sum] = (sum == 0);
+        if(dp[i][j][sum]!=-1)return dp[i][j][sum];
 
-        if(i+1 < m) {
-            if(solve(i+1,j,sum,grid))  return dp[i][j][sum] = true;
-        }
+        if(i==m-1 && j==n-1)return (sum==0);
 
-        if(j+1 < n) {
-            if(solve(i,j+1,sum,grid)) return dp[i][j][sum] = true;
-        }
-
-        return dp[i][j][sum] = false;
+        return dp[i][j][sum] = (solve(i+1,j,grid,sum) || solve(i,j+1,grid,sum));
     }
-
     bool hasValidPath(vector<vector<char>>& grid) {
         m = grid.size();
         n = grid[0].size();
-    
-        if(grid[0][0] == ')') return false;
-
-        memset(dp, -1, sizeof(dp));
-
-        return solve(0, 0, 0, grid);
+        memset(dp,-1,sizeof(dp));
+        return solve(0,0,grid,0);
     }
 };

@@ -5,13 +5,12 @@ public:
 
     void solve(int i, int openUsed, int cnt, string &curr) {
         if (i == n) {
-            if (cnt == 0)
-                ans.push_back(curr);
+            if (cnt == 0) ans.push_back(curr);
             return;
         }
 
         // Place '(' only if we haven't used all N opening brackets
-        if (openUsed < n / 2) {
+        if (openUsed < n/2) {
             curr.push_back('(');
             solve(i + 1, openUsed + 1, cnt + 1, curr);
             curr.pop_back();

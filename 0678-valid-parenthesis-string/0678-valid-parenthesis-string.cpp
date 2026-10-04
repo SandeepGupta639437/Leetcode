@@ -3,7 +3,7 @@ public:
     bool checkValidString(string s) {
         int minOpen = 0, maxOpen = 0; 
         
-        for (char c : s) {
+        for (char c : s) { 
             if (c == '(') {
                 minOpen++;
                 maxOpen++;
